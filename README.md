@@ -1,6 +1,30 @@
-# Getting Started with Create React App
+## Personal Trainer App - Frontend React
+This is my phase 5 project App. The app allows a Personal Trainer to setup their clients, create exercises and upload photos/videos, generate workout templates and schedule workouts and link to clients and workout templates. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Limitations
+- Add clients and exercises you cannot upload images/vidoes at the same. There needs to be a record to attach to. This needs more work to allow file upload on form submission. 
+- On the Program schedules the select boxes lookup the client and workout templates. These work but initially do not load what they are linked to already. If you click the select box and click away it loads. This is due to the selectbox data load, I need to store the lists with useState first and then reference this I think but needs more work to fix. 
+
+## Dependancies
+Main libraries I used are Devextreme for the Grids, menus and other components. These should load on install bundle.
+Auth0 is used for the authentication. There is no register option.
+
+## Install Steps
+- Download and run npm install
+- Populate .ENV file with Auth0 domain and client id. 
+- Make local server run on port 3000.
+- Make sure backed is running on port 3001 or change in .ENV file on react to point to your server. 
+- npm start 
+
+## Example .ENV file. 
+REACT_APP_AUTH0_DOMAIN="domain-key"
+REACT_APP_AUTH0_CLIENT_ID="client-id"
+REACT_APP_BACKEND_URL="http://localhost:3001"
+
+
+
+
+
 
 ## Available Scripts
 
@@ -14,10 +38,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
