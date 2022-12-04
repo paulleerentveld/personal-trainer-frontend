@@ -17,9 +17,9 @@ Auth0 is used for the authentication. There is no register option.
 - npm start 
 
 ## Example .ENV file. 
-REACT_APP_AUTH0_DOMAIN="domain-key";
-REACT_APP_AUTH0_CLIENT_ID="client-id"; 
-REACT_APP_BACKEND_URL="http://localhost:3001" ;
+REACT_APP_AUTH0_DOMAIN="domain-key"  
+REACT_APP_AUTH0_CLIENT_ID="client-id"  
+REACT_APP_BACKEND_URL="http://localhost:3001"  
 
 
 
