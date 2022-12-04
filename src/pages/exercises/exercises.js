@@ -29,6 +29,7 @@ const bodyparts = [
 const fileUploadUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
 let fileUploaderRef = React.createRef();
 let imgRef = React.createRef();
+let gridRef = React.createRef();
 let videoRef = React.createRef();
 
 
@@ -37,7 +38,7 @@ export default function Exercise() {
   const [retryButtonVisible, setRetryButtonVisible] = useState(false);
   const [videoRetryButtonVisible, setVideoRetryButtonVisible] = useState(false);
   const refreshGrid = useCallback(() => {
-    DataGrid.current.instance.refresh()
+    gridRef.current.instance.refresh(true)
   })
 
   function onEditingStart(data) {
@@ -46,6 +47,11 @@ export default function Exercise() {
 
   function onCancelSave() {
     seteditorData(0)
+    refreshGrid()
+  }
+  function onSaved() {
+    seteditorData(0)
+    refreshGrid()
   }
 
   function videoRender() {
@@ -86,7 +92,6 @@ export default function Exercise() {
     }
 
     const onUploaded = useCallback((e, cellInfo) => {
-      refreshGrid();
       setRetryButtonVisible(false);
     }, []);
   
@@ -132,7 +137,6 @@ export default function Exercise() {
       }
   
       const onVideoUploaded = useCallback((e, cellInfo) => {
-        refreshGrid();
         setVideoRetryButtonVisible(false);
       }, []);
     
@@ -174,6 +178,7 @@ export default function Exercise() {
       <div className={'dx-card responsive-paddings'}>
         <div id="data-grid">
                 <DataGrid
+                ref={gridRef}
                   dataSource={exercisestore}
                   keyExpr="id"
                   showBorders={true}
@@ -182,7 +187,7 @@ export default function Exercise() {
                   columnHidingEnabled={true}
                   onEditingStart={onEditingStart}
                   onEditCanceled={onCancelSave}
-                  onSaved={onCancelSave}
+                  onSaved={onSaved}
                 >
                   <Paging enabled={false} />
                   <Editing
@@ -211,7 +216,7 @@ export default function Exercise() {
                     </Form>
                   </Editing>
                   <FilterRow visible={true} />
-                  <Column dataField="image" 
+                  <Column dataField="imageupload_url" 
                     width={100}
                     allowSorting={false}
                     cellRender= {cellRender}

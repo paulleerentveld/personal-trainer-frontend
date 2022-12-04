@@ -19,6 +19,7 @@ const sex = [
 const fileUploadUrl = process.env.REACT_APP_BACKEND_URL+"/clients/";
 let fileUploaderRef = React.createRef();
 let imgRef = React.createRef();
+let gridRef = React.createRef();
 
 
 
@@ -34,7 +35,7 @@ function itemRender(data) {
 export default function Client() {
   const [retryButtonVisible, setRetryButtonVisible] = useState(false);
   const refreshGrid = useCallback(() => {
-    DataGrid.current.instance.refresh()
+    gridRef.current.instance.refresh(true)
   })
 
   function cellRender(data) {
@@ -55,7 +56,7 @@ export default function Client() {
     }
 
     const onUploaded = useCallback((e, cellInfo) => {
-      refreshGrid();
+      //refreshGrid();
       //cellInfo.setValue("uploads/image/" + e.request.responseText);
       setRetryButtonVisible(false);
     }, []);
@@ -72,7 +73,6 @@ export default function Client() {
     }, []);
 
     const onClick = e => {
-      // The retry UI/API is not implemented. Use a private API as shown at T611719.
       const fileUploaderInstance = fileUploaderRef.current.instance;
       for (let i = 0; i < fileUploaderInstance._files.length; i++) {
         delete fileUploaderInstance._files[i].uploadStarted;
@@ -90,12 +90,13 @@ export default function Client() {
     };
 
     const onEditCanceled = useCallback(e => {
+      refreshGrid()
       if (retryButtonVisible)
         setRetryButtonVisible(false);
     }, [retryButtonVisible])
   
     const onSaved = useCallback(e => {
-      console.log(e)
+      refreshGrid()
       if (retryButtonVisible)
         setRetryButtonVisible(false);
     }, [retryButtonVisible])
@@ -107,6 +108,7 @@ export default function Client() {
           <div className={'dx-card responsive-paddings'}>
             <div id="data-grid">
               <DataGrid
+                ref={gridRef}
                 dataSource={clientstore}
                 key="id"
                 showBorders={true}

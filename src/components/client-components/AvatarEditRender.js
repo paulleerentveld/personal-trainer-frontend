@@ -8,7 +8,16 @@ let imgRef = React.createRef();
 
 
 function AvatarEditRender({ cellInfo }) {
-    const [retryButtonVisible, setRetryButtonVisible] = useState(false);
+    return (
+            
+        <>
+          <img width={"400"} ref={imgRef} className="uploadedImage" src={cellInfo.data.avatar_url} alt="client pic"/>
+          <FileUploader ref={fileUploaderRef} multiple={false} accept="image/*" uploadMode="useButtons"
+                        uploadUrl={fileUploadUrl+cellInfo.data.id} onValueChanged={onValueChanged}
+                        onUploaded={e => onUploaded(e, cellInfo)} onUploadError={onUploadError} uploadMethod="PUT" name='user[avatar]'/>
+          <Button className={"retryButton"} text="Retry" visible={retryButtonVisible} onClick={onClick}/>
+        </>
+      );
 
     const onUploaded = useCallback((e, cellInfo) => {
         cellInfo.setValue("uploads/image/" + e.request.responseText);
@@ -42,38 +51,7 @@ function AvatarEditRender({ cellInfo }) {
         }
         reader.readAsDataURL(e.value[0]); // convert to base64 string
       };
-/*         function handleImageChange(e) {
-          console.log(e.target.files[0])
-          if (e.target.files[0]) setNewPhoto(e.target.files[0]);
-        };
-        function uploadPhoto() {
-          const formData = new FormData();
-          formData.append("user[avatar]", newPhoto);
-          
-          // configure your fetch url appropriately
-          fetch(`${fileUploadUrl}${cellInfo.data.id}`, {
-            method: "PATCH",
-            body: formData
-          })
-            .then(res => res.json())
-            .then(data => {
-             // do something with the returned data
-            });
-        }; */
-        return (
-            
-            <>
-            {/* <form onSubmit={uploadPhoto}>
-              <input type="file" name="image"accept="image/png, image/jpeg" onChange={handleImageChange} />
-              <input type="submit" value="Submit" />
-              </form> */}
-              <img width={"400"} ref={imgRef} className="uploadedImage" src={cellInfo.data.avatar_url} alt="client pic"/>
-              <FileUploader ref={fileUploaderRef} multiple={false} accept="image/*" uploadMode="useButtons"
-                            uploadUrl={fileUploadUrl+cellInfo.data.id} onValueChanged={onValueChanged}
-                            onUploaded={e => onUploaded(e, cellInfo)} onUploadError={onUploadError} uploadMethod="PUT" name='user[avatar]'/>
-              <Button className={"retryButton"} text="Retry" visible={retryButtonVisible} onClick={onClick}/>
-            </>
-          );
+
         }
 
 export {AvatarEditRender}

@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Scheduler, {Editing, Resource, View} from 'devextreme-react/scheduler';
 import { Popup } from 'devextreme-react/popup';
 import ScrollView from 'devextreme-react/scroll-view';
 import {formatDate}  from 'devextreme/localization';
 import { programsstore } from '../../api/programs';
-import { clientstore } from '../../api/clients';
-import { workoutsstore } from '../../api/workouts';
-import Query from 'devextreme/data/query';
+//import { clientstore } from '../../api/clients';
+//import { workoutsstore } from '../../api/workouts';
+//import Query from 'devextreme/data/query';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './programs.scss';
 
@@ -15,19 +15,35 @@ const views = ['day', 'workWeek', 'week', 'month', 'agenda'];
 
 export default function Program() {
   const [workoutData, setWorkoutData] = useState({})
+  const [workoutList, setWorkoutList] = useState({})
+  const [clientList, setClientList] = useState({})
   const [isPopupVisible, setPopupVisibility] = useState(false);
   const togglePopup = () => {
     setPopupVisibility(!isPopupVisible);
 };
+const BackendUrl = process.env.REACT_APP_BACKEND_URL;
+
+useEffect(() => {
+  fetch(BackendUrl+"/clients/")
+  .then(response => response.json())
+  .then(data => setClientList(data))
+},[])
+
+useEffect(() => {
+  fetch(BackendUrl+"/workouts/")
+  .then(response => response.json())
+  .then(data => setWorkoutList(data))
+},[])
 
 function onAppointmentFormOpening(e) {
   const { form } = e;
+  //console.log(e.appointmentData)
   let { startdate } = e.appointmentData.startdate;
   let { enddate } = e.appointmentData.enddate;
 
   function OpenWorkoutPopup() {
-    let workoutData = e.appointmentData.workout
-    setWorkoutData(workoutData);
+    //let workoutData = e.appointmentData.workout
+    setWorkoutData(e.appointmentData.workout);
     togglePopup();
   }
 
@@ -53,9 +69,8 @@ function onAppointmentFormOpening(e) {
     dataField: 'user_id',
     
     editorOptions: {
-      //items: clientstore,
-      dataSource: clientstore,
-      displayExpr: 'firstname',
+      dataSource: clientList,
+      displayExpr: 'fullname',
       valueExpr: 'id',
     },
   }, {
@@ -66,8 +81,7 @@ function onAppointmentFormOpening(e) {
     editorType: 'dxSelectBox',
     dataField: 'workout_id',
     editorOptions: {
-      //items: workoutsstore,
-      dataSource: workoutsstore,
+      dataSource: workoutList,
       displayExpr: 'name',
       valueExpr: 'id',
     },
@@ -174,7 +188,7 @@ return (
           <Resource 
             fieldExpr="user_id"
             label="Client"
-            dataSource={clientstore} 
+            dataSource={clientList} 
             useColorAsDefault={true} />
         </Scheduler>
         <Popup
@@ -190,6 +204,7 @@ return (
   </React.Fragment>
 )
 };
+
 
 
 
