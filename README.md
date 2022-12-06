@@ -6,7 +6,7 @@ This is my phase 5 project App. The app allows a Personal Trainer to setup their
 
 
 ## Dependancies
-Main libraries I used are Devextreme for the Grids, menus and other components. These should load on install bundle.
+Main libraries I used are Devextreme for the Grids, menus and other components. These should load on install bundle.  
 Auth0 is used for the authentication. There is no register option.
 
 ## Install Steps

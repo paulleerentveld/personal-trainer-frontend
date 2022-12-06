@@ -22,7 +22,9 @@ export default function Home() {
               <Link to={'/clients'}>
                 <Button icon="group"
                       text="Clients"
-                      className='home-button'/>
+                      className='home-button'
+                      width="140" 
+                      height="50" />
               </Link>
             </div>
           </Item>
@@ -31,7 +33,9 @@ export default function Home() {
               <Link to={'/exercises'}>
                 <Button icon="runner"
                       text="Exercises"
-                      className='home-button'/>
+                      className='home-button'
+                      width="140"
+                      height="50" />
               </Link>
             </div>
           </Item>
@@ -46,7 +50,9 @@ export default function Home() {
               <Link to={'/workouts'}>
                 <Button icon="checklist"
                       text="Workouts"
-                      className='home-button'/>
+                      className='home-button'
+                      width="140"
+                      height="50" />
               </Link>
             </div>
           </Item>
@@ -55,7 +61,9 @@ export default function Home() {
               <Link to={'/programs'}>
                 <Button icon="event"
                       text="Programs"
-                      className='home-button'/>
+                      className='home-button'
+                      width="140"
+                      height="50" />
               </Link>
             </div>
           </Item>

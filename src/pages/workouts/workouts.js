@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, MasterDetail, Lookup, } from 'devextreme-react/data-grid';
+import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, MasterDetail, Lookup, SearchPanel, } from 'devextreme-react/data-grid';
 import { Item } from 'devextreme-react/form';
 import TagBox from 'devextreme-react/tag-box';
 import { workoutsstore } from '../../api/workouts';
@@ -84,8 +84,10 @@ return (
                 focusedRowEnabled={true}
                 columnAutoWidth={true}
                 columnHidingEnabled={true}
+                wordWrapEnabled={true}
               >
                 <Paging enabled={false} />
+                <SearchPanel visible={true} width="200" />
                 <Editing
                   mode="popup"
                   allowUpdating={true}
@@ -101,7 +103,7 @@ return (
                   </Form>
                 </Editing>
                 <FilterRow visible={true} />
-                <Column dataField="name" caption={"Name"}  />
+                <Column dataField="name" caption={"Name"} width="120"  />
                 <Column dataField="workouttype" caption={"Workout Type"} >
                   <Lookup dataSource={workoutType} />
                 </Column>

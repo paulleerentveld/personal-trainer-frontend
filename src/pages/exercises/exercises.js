@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, SelectBox, Lookup,} from 'devextreme-react/data-grid';
+import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, SelectBox, Lookup, SearchPanel,} from 'devextreme-react/data-grid';
 import { Item, GroupItem, Label, SimpleItem } from 'devextreme-react/form';
 import { exercisestore } from '../../api/exercises';
 import './exercises.scss';
@@ -190,6 +190,7 @@ export default function Exercise() {
                   onSaved={onSaved}
                 >
                   <Paging enabled={false} />
+                  <SearchPanel visible={true} width="200" />
                   <Editing
                     mode="popup"
                     allowUpdating={true}
@@ -220,14 +221,17 @@ export default function Exercise() {
                     width={100}
                     allowSorting={false}
                     cellRender= {cellRender}
-                    hidingPriority={4}
+                    hidingPriority={3}
+                    caption=""
                     />
                   <Column dataField="name" caption={"Name"} defaultSortOrder="asc"  />
                   <Column dataField="description" caption={"Description"} hidingPriority={0} />
-                  <Column dataField="category" caption={"Category"}>
+                  <Column dataField="category" caption={"Category"} hidingPriority={4}>
                     <Lookup dataSource={categories} />
                   </Column>
-                  <Column dataField="bodypart" caption={"Bodypart"}> 
+                  <Column dataField="bodypart" 
+                    caption={"Bodypart"} 
+                    hidingPriority={2} > 
                     <Lookup dataSource={bodyparts} />
                   </Column>
                   <Column dataField="video" 
@@ -239,7 +243,6 @@ export default function Exercise() {
                     allowSorting={false}
                     //cellRender= {cellRender}
                     editCellRender={editImageCellRender}
-                    hidingPriority={4}
                     visible={false}
                     caption="Image"
                   />
@@ -248,7 +251,6 @@ export default function Exercise() {
                     allowSorting={false}
                     //cellRender= {cellRender}
                     editCellRender={editVideoCellRender}
-                    hidingPriority={4}
                     visible={false}
                     caption="Video"
                   />

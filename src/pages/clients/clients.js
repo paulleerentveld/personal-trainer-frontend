@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, Button as Button2, Lookup} from 'devextreme-react/data-grid';
+import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, Button as Button2, Lookup, SearchPanel} from 'devextreme-react/data-grid';
+import ActionSheet from 'devextreme-react/action-sheet';
 import 'devextreme-react/text-area';
 import { Item } from 'devextreme-react/form';
 import { clientstore } from '../../api/clients';
@@ -12,6 +13,11 @@ const clientType = ["client"]
 const sex = [
   'Male',
   'Female',
+];
+
+export const actionSheetItems = [
+  { text: 'Edit' },
+  { text: 'Delete' },
 ];
 
 
@@ -34,9 +40,16 @@ function itemRender(data) {
 
 export default function Client() {
   const [retryButtonVisible, setRetryButtonVisible] = useState(false);
+  const [isActionSheetVisible, setIsActionSheetVisible] = useState(false);
   const refreshGrid = useCallback(() => {
     gridRef.current.instance.refresh(true)
   })
+
+  function onActionsheetVisibleChange(isVisible) {
+    if (isVisible !== isActionSheetVisible) {
+      setIsActionSheetVisible(isVisible)
+    }
+  }
 
   function cellRender(data) {
     return <img src={data.value} width="100" alt='client' />;
@@ -119,11 +132,14 @@ export default function Client() {
                 onSaved={onSaved}
               >
                 <Paging enabled={false} />
+                <SearchPanel visible={true} width="200" />
                 <Editing
                   mode="popup"
                   allowUpdating={true}
                   allowAdding={true}
-                  allowDeleting={true}>
+                  allowDeleting={true}
+                  hidingPriority={0}
+                  >
                   <Popup title="Client Info" showTitle={true} />
                   <Form>
                     <Item itemType="group" colCount={1} colSpan={1}>
@@ -154,25 +170,31 @@ export default function Client() {
                   allowSorting={false}
                   cellRender= {cellRender}
                   editCellRender={editCellRender}
-                  hidingPriority={4}
-                  caption="Avatar"
+                  hidingPriority={5}
                   />
-                <Column dataField="firstname" caption="Firstname"/>
-                <Column dataField="lastname" caption="Lastname" />
-                <Column dataField="email" caption="Email" hidingPriority={3} />
-                <Column dataField="mobile" caption="Mobile" hidingPriority={2} />
-                <Column dataField="sex" caption="Sex" hidingPriority={1} >
+                <Column dataField="firstname" caption="Firstname" visible={false}/>
+                <Column dataField="lastname" caption="Lastname" visible={false} />
+                <Column dataField="fullname" caption="Name" />
+                <Column dataField="email" caption="Email" hidingPriority={4} />
+                <Column dataField="mobile" caption="Mobile" hidingPriority={3} />
+                <Column dataField="sex" caption="Sex" hidingPriority={2} >
                   <Lookup dataSource={sex} />
                 </Column>
-                <Column dataField="dob" caption="DOB" dataType="date" hidingPriority={0} />
-                <Column dataField="authlinked" caption="Auth" hidingPriority={0} visible={false} />
+                <Column dataField="dob" caption="DOB" dataType="date" hidingPriority={1} />
+                <Column dataField="authlinked" caption="Auth" visible={false} />
                 <Column dataField="weight" caption="Weight" visible={false} />
                 <Column dataField="height" caption="Height" visible={false} />
                 <Column dataField="usertype" caption="Client Type" visible={false}>
                   <Lookup dataSource={clientType} />
                 </Column>
                 <Column dataField="notes" visible={false} />
+                <Column type="buttons" hidingPriority={0} width="70" >
+                  <Button2 name="edit" ></Button2>
+                  <Button2 name="delete" ></Button2>
+                </Column>
+ 
               </DataGrid>
+
             </div>
         </div>
       </div>
