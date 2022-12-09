@@ -5,6 +5,7 @@ import TagBox from 'devextreme-react/tag-box';
 import { workoutsstore } from '../../api/workouts';
 import { exercisestore } from '../../api/exercises';
 import { ExercisesTagBox } from '../../components/exercises-tagbox/ExercisesTagBox'
+import { Table } from 'reactstrap';
 import './workouts.scss';
 
 const workoutType = [
@@ -22,33 +23,36 @@ const exerciseDetails = ({ data }) => {
 
   const Exercise = ({ name, image, description, video }) => (
         <tr>
-          <td><img src={image} width={"100"} /></td>
+          <td><img src={image} width={"60"} /></td>
           <td>{name}</td>
-          <td>{description}</td>
-          <td><video width="100" controls src={video} ></video> </td>
-
+          <td style={ {width: 500, maxWidth: 500, wordBreak: 'break-all' } }>{description}</td>
+          {/* <td><video width="100" controls src={video} ></video> </td> */}
         </tr>
   );
 
   return (
       <div >
         <p><strong>Exercises</strong></p>
-        <table className="exercisesDetail">
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
+        <Table bordered responsive>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
           {data.exercises.map((exercise) => (
             <Exercise
               name={exercise.name}
               image={exercise.imageupload_url || '/images/icons/exercise.png'}
-              video={exercise.videoupload_url || '/images/icons/exercise.png'}
+              // video={exercise.videoupload_url || '/images/icons/exercise.png'}
               description={exercise.description}
               key={exercise.id}
             />
           ))}
-        </table>
+          </tbody>
+        </Table>
       </div>
   );
 };

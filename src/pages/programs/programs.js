@@ -9,6 +9,7 @@ import { programsstore } from '../../api/programs';
 //import Query from 'devextreme/data/query';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './programs.scss';
+import { Table } from 'reactstrap';
 
 //const currentDate = new Date(2022, 01, 01);
 const views = ['day', 'workWeek', 'week', 'month', 'agenda'];
@@ -112,6 +113,17 @@ function onAppointmentFormOpening(e) {
 
 const renderPopup = () => {
 
+
+  const Exercise = ({ name, image, description, video }) => (
+    <tr>
+      <td><img src={image} width={"60"} /></td>
+      <td>{name}</td>
+      <td style={ {width: 500, maxWidth: 500, wordBreak: 'break-all' } }>{description}</td>
+      <td>{video? <video width="400" controls src={video}></video> : null }</td>
+      {/* <td><video width="100" controls src={video} ></video> </td> */}
+    </tr>
+);
+
   if (workoutData) {
   return (
     <>
@@ -119,21 +131,33 @@ const renderPopup = () => {
       <div>
         <h6>Workout: {workoutData.name}</h6>
         <p>Type: {workoutData.workouttype}</p>
-        <p>Desc: {workoutData.description}</p>
-        <p>Notes: {workoutData.notes}</p>
         <h6>Exercises</h6>
-        <table className='workout-table'>
+        <Table bordered responsive >
+          <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Video</th>
+              </tr>
+            </thead>
           <tbody>
             {workoutData.exercises.map((exercise) =>
-              <tr>
+              <Exercise 
+                name={exercise.name}
+                description={exercise.description}
+                video={exercise.videoupload_url}
+                image={exercise.imageupload_url}
+              />
+/*               <tr>
                 <td>Name: {exercise.name}</td>
                 <td>Desc: {exercise.description}</td>
                 <td><img width="400" src={exercise.imageupload_url}></img></td>
                 <td>{exercise.videoupload_url? <video width="400" controls src={exercise.videoupload_url}></video> : null }</td>
-              </tr>
+              </tr> */
               )}
           </tbody>
-        </table>
+        </Table>
       </div>
       </ScrollView>
     </>
@@ -161,6 +185,24 @@ const fullname = targetedAppointmentData.user.firstname + ' ' + targetedAppointm
   );
 }
 
+const AppointmentTooltip = (data) => {
+
+  const {targetedAppointmentData} = data.data;
+  const starttime = formatDate(targetedAppointmentData.displayStartDate, 'shortTime')
+  const endtime = formatDate(targetedAppointmentData.displayEndDate, 'shortTime')
+  const fullname = targetedAppointmentData.user.firstname + ' ' + targetedAppointmentData.user.lastname
+   return (
+     <div className="appointment-preview">
+        <div> <strong>{fullname}</strong></div>
+        <div>
+          <strong>{ targetedAppointmentData.workout.name}</strong>
+        </div>
+        <div>{starttime + ' - ' + endtime}
+        </div>
+      </div>
+    );
+  }
+
 
 
 return (
@@ -182,6 +224,7 @@ return (
           adaptivityEnabled={true}
           onAppointmentFormOpening={onAppointmentFormOpening}
           appointmentComponent={renderAppointment}
+          //appointmentTooltipComponent={AppointmentTooltip}
           >
           <Editing 
             allowAdding={true} />

@@ -82,7 +82,7 @@ export default function Exercise() {
   function editImageCellRender(cellInfo) {
     return (
         <>
-          {cellInfo.data.imageupload_url? <img width={"400"} ref={imgRef} className="uploadedImage" src={cellInfo.data.imageupload_url} alt="exercise pic"/> : null}
+          {cellInfo.data.imageupload_url? <img width={"80%"} ref={imgRef} className="uploadedImage" src={cellInfo.data.imageupload_url} alt="exercise pic"/> : null}
           <FileUploader ref={fileUploaderRef} multiple={false} accept="image/*" uploadMode="instantly"
                         uploadUrl={fileUploadUrl+cellInfo.data.id} onValueChanged={onValueChanged}
                         onUploaded={e => onUploaded(e, cellInfo)} onUploadError={onUploadError} uploadMethod="PUT" name='exercise[imageupload]'/>
@@ -127,7 +127,7 @@ export default function Exercise() {
     function editVideoCellRender(cellInfo) {
       return (
           <>
-            {cellInfo.data.videoupload_url? <video  ref={videoRef} className="uploadedVideo" width="600" controls src={cellInfo.data.videoupload_url} ></video> : null}
+            {cellInfo.data.videoupload_url? <video  ref={videoRef} className="uploadedVideo" width="100%" controls src={cellInfo.data.videoupload_url} ></video> : null}
             <FileUploader ref={fileUploaderRef} multiple={false} accept="video/*" uploadMode="instantly"
                           uploadUrl={fileUploadUrl+cellInfo.data.id} onValueChanged={onVideoValueChanged}
                           onUploaded={e => onVideoUploaded(e, cellInfo)} onUploadError={onVideoUploadError} uploadMethod="PUT" name='exercise[videoupload]'/>
