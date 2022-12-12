@@ -1,12 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, SelectBox, Lookup, SearchPanel,} from 'devextreme-react/data-grid';
 import { Item, GroupItem, Label, SimpleItem } from 'devextreme-react/form';
 import { exercisestore } from '../../api/exercises';
 import './exercises.scss';
 import ReactPlayer from 'react-player'
-import FileUploader from 'devextreme-react/file-uploader';
 import Button from 'devextreme-react/button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import { ExerciseCard } from '../../components/exercise-components/exercise-card'
+import { ExerciseEditForm } from '../../components/exercise-components/exercise-editform'
+import { ExercisePreview } from '../../components/exercise-components/exercise-preview'
+import { ExerciseAddForm } from '../../components/exercise-components/exercise-addform'
 
+
+const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
 
 const notesEditorOptions = { height: 200 };
 const categories = [
@@ -34,236 +42,178 @@ let videoRef = React.createRef();
 
 
 export default function Exercise() {
-  const [editorData, seteditorData] = useState(0);
-  const [retryButtonVisible, setRetryButtonVisible] = useState(false);
-  const [videoRetryButtonVisible, setVideoRetryButtonVisible] = useState(false);
-  const refreshGrid = useCallback(() => {
-    gridRef.current.instance.refresh(true)
-  })
+    const [exerciseData, setExerciseData] = useState([])
+    const [editExercise, setEditExercise] = useState({})
+    const [show, setShow] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
+    const [showAdd, setShowAdd] = useState(false);
+    const [editedIndex, setEditedIndex] = useState();
+    const [newImage, setNewImage] = useState(null);
+    const [newVideo, setNewVideo] = useState(null);
+  
+  
+    const handleClose = () => {setShow(false); setEditExercise({});}
+    const handleShow = () => setShow(true);
 
-  function onEditingStart(data) {
-    seteditorData(data.data)
-  }
+    const handlePreviewClose = () => {setShowPreview(false); setEditExercise({});}
+    const handlePreviewShow = () => setShowPreview(true);
 
-  function onCancelSave() {
-    seteditorData(0)
-    refreshGrid()
-  }
-  function onSaved() {
-    seteditorData(0)
-    refreshGrid()
-  }
+    const handleAddClose = () => {setShowAdd(false); setEditExercise({});}
+    const handleAddShow = () => setShowAdd(true);
+  
 
-  function videoRender() {
-    if (editorData.videoupload_url == "" || editorData.videoupload_url == null) {
-      return
-    } else {
-      return <>
-{/*               <ReactPlayer url={editorData.videoupload_url} 
-                config={{
-                  file: {
-                    attributes: {
-                      crossOrigin: "true",
-                    }
-                  }
-                }} /> */}
-              <video width="600" controls src={editorData.videoupload_url} ></video> 
-            </>
+  
+    function handleSubmit(e) {
+      e.preventDefault()
+      const formData = new FormData()
+      formData.append('name', editExercise.name)
+      formData.append('description', editExercise.description)
+      formData.append('category', editExercise.category)
+      formData.append('bodypart', editExercise.bodypart)
+      newImage && formData.append('imageupload', newImage)
+      newVideo && formData.append('videoupload', newVideo)
+      const newExercises = [...exerciseData]
+      newExercises[editedIndex] = editExercise
+          fetch(BackendUrl+editExercise.id, {
+            method: 'PATCH',
+            body: formData,
+          })
+            .then(response => response.json())
+            .then(success => {
+                newExercises[editedIndex].imageupload_url = success.imageupload_url
+              setExerciseData(newExercises)
+              handleClose();
+              console.log(success)              
+            })
+            .catch(error => console.log(error)
+          );
     }
-  }
-  function imageRender() {
-    if (editorData.imageupload_url == "" || editorData.imageupload_url == null) {
-      return
-    } else {
-      return <img src={editorData.imageupload_url} width="400" alt='exercise'/>
-    }
-  } 
 
-  function editImageCellRender(cellInfo) {
+    function handleNewSubmit(e) {
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append('name', editExercise.name)
+        formData.append('description', editExercise.description)
+        formData.append('category', editExercise.category)
+        formData.append('bodypart', editExercise.bodypart)
+        newImage && formData.append('imageupload', newImage)
+        newVideo && formData.append('videoupload', newVideo)
+        const newExercises = [...exerciseData]
+            fetch(BackendUrl, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(response => response.json())
+              .then(success => {
+                newExercises.push(success)
+                setExerciseData(newExercises)
+                handleAddClose();
+                console.log(success)              
+              })
+              .catch(error => console.log(error)
+            );
+      }
+  
+    useEffect(() => {
+      fetch(BackendUrl)
+      .then(response => response.json())
+      .then(data => setExerciseData(data))
+    },[]);
+  
+    function fetchClient(id) {
+      fetch(BackendUrl+"/"+id)
+      .then(response => response.json())
+      .then(data => setEditExercise(data))
+    }
+    
+    function handleEditExercise(id) {
+      fetchClient(id);
+      handleShow();
+      //console.log(editClient)
+    }
+
+    function handlePreviewExercise(id) {
+        fetchClient(id);
+        handlePreviewShow();
+        //console.log(editClient)
+      }
+  
+   
+  
     return (
-        <>
-          {cellInfo.data.imageupload_url? <img width={"80%"} ref={imgRef} className="uploadedImage" src={cellInfo.data.imageupload_url} alt="exercise pic"/> : null}
-          <FileUploader ref={fileUploaderRef} multiple={false} accept="image/*" uploadMode="instantly"
-                        uploadUrl={fileUploadUrl+cellInfo.data.id} onValueChanged={onValueChanged}
-                        onUploaded={e => onUploaded(e, cellInfo)} onUploadError={onUploadError} uploadMethod="PUT" name='exercise[imageupload]'/>
-          <Button className={"retryButton"} text="Retry" visible={retryButtonVisible} onClick={onClick}/>
-        </>
-      );
-    }
+      <React.Fragment>
 
-    const onUploaded = useCallback((e, cellInfo) => {
-      setRetryButtonVisible(false);
-    }, []);
-  
-    const onUploadError = useCallback(e => {
-      let xhttp = e.request;
-      if (xhttp.status === 400) {
-        e.message = e.error.responseText;
-      }
-      if (xhttp.readyState === 4 && xhttp.status === 0) {
-        e.message = "Connection refused";
-      }
-      setRetryButtonVisible(true);
-    }, []);
-
-    const onClick = e => {
-      // The retry UI/API is not implemented. Use a private API as shown at T611719.
-      const fileUploaderInstance = fileUploaderRef.current.instance;
-      for (let i = 0; i < fileUploaderInstance._files.length; i++) {
-        delete fileUploaderInstance._files[i].uploadStarted;
-      }
-      fileUploaderInstance.upload();
-    };
-    
-    const onValueChanged = e => {
-      const reader = new FileReader();
-      reader.onload = function (args) {
-        imgRef.current.setAttribute('src', args.target.result);
-      }
-      reader.readAsDataURL(e.value[0]); // convert to base64 string
-      
-    };
-  
-    function editVideoCellRender(cellInfo) {
-      return (
-          <>
-            {cellInfo.data.videoupload_url? <video  ref={videoRef} className="uploadedVideo" width="100%" controls src={cellInfo.data.videoupload_url} ></video> : null}
-            <FileUploader ref={fileUploaderRef} multiple={false} accept="video/*" uploadMode="instantly"
-                          uploadUrl={fileUploadUrl+cellInfo.data.id} onValueChanged={onVideoValueChanged}
-                          onUploaded={e => onVideoUploaded(e, cellInfo)} onUploadError={onVideoUploadError} uploadMethod="PUT" name='exercise[videoupload]'/>
-            <Button className={"retryButton"} text="Retry" visible={retryButtonVisible} onClick={onVideoClick}/>
-          </>
-        );
-      }
-  
-      const onVideoUploaded = useCallback((e, cellInfo) => {
-        setVideoRetryButtonVisible(false);
-      }, []);
-    
-      const onVideoUploadError = useCallback(e => {
-        let xhttp = e.request;
-        if (xhttp.status === 400) {
-          e.message = e.error.responseText;
-        }
-        if (xhttp.readyState === 4 && xhttp.status === 0) {
-          e.message = "Connection refused";
-        }
-        setVideoRetryButtonVisible(true);
-      }, []);
-  
-      const onVideoClick = e => {
-        // The retry UI/API is not implemented. Use a private API as shown at T611719.
-        const fileUploaderInstance = fileUploaderRef.current.instance;
-        for (let i = 0; i < fileUploaderInstance._files.length; i++) {
-          delete fileUploaderInstance._files[i].uploadStarted;
-        }
-        fileUploaderInstance.upload();
-      };
-      
-      const onVideoValueChanged = e => {
-        const reader = new FileReader();
-        reader.onload = function (args) {
-          videoRef.current.setAttribute('src', args.target.result);
-        }
-        reader.readAsDataURL(e.value[0]); // convert to base64 string
-        
-      };
-    
-
-
-  return (
-  <React.Fragment>
-    <h2 className={'content-block'}>Exercises</h2>
-    <div className={'content-block'}>
-      <div className={'dx-card responsive-paddings'}>
-        <div id="data-grid">
-                <DataGrid
-                ref={gridRef}
-                  dataSource={exercisestore}
-                  keyExpr="id"
-                  showBorders={true}
-                  focusedRowEnabled={true}
-                  columnAutoWidth={true}
-                  columnHidingEnabled={true}
-                  onEditingStart={onEditingStart}
-                  onEditCanceled={onCancelSave}
-                  onSaved={onSaved}
-                >
-                  <Paging enabled={false} />
-                  <SearchPanel visible={true} width="200" />
-                  <Editing
-                    mode="popup"
-                    allowUpdating={true}
-                    allowAdding={true}
-                    allowDeleting={true}>
-                    <Popup title={editorData.name} showTitle={true} />
-                    <Form>
-                      <Item itemType="group" colCount={2} colSpan={2}>
-                        <Item dataField="name" />
-                        <Item 
-                          dataField="description"
-                          editorType="dxTextArea"/>
-                        <Item dataField="category"  />
-                        <Item dataField="bodypart" />
-                      </Item>
-                      <Item itemType="group" colCount={2} colSpan={2}>
-                        <Item dataField="image_url" colSpan={1}/>
-                        <Item dataField="video_url" colSpan={1}/>
-                      </Item>
-                      {/* <Item itemType="group" colCount={2} colSpan={2}>
-                      <Item render={videoRender} />
-                      <Item render={imageRender} />
-                      </Item> */}
-                    </Form>
-                  </Editing>
-                  <FilterRow visible={true} />
-                  <Column dataField="imageupload_url" 
-                    width={100}
-                    allowSorting={false}
-                    cellRender= {cellRender}
-                    hidingPriority={3}
-                    caption=""
+        <Container>
+        <div>
+            <Button variant="primary" onClick={handleAddShow} >Add</Button> 
+        </div>
+          <ExerciseEditForm 
+            handleClose={handleClose}
+            handleShow={handleShow}
+            handleSubmit={handleSubmit}
+            data={editExercise}
+            setdata={setEditExercise}
+            parentData={exerciseData}
+            setParentData={setExerciseData}
+            BackendUrl={BackendUrl}
+            show={show}
+            editedIndex={editedIndex}
+            setNewImage={setNewImage}
+            newImage={newImage}
+            newVideo={newVideo}
+            setNewVideo={setNewVideo}
+            categories={categories}
+            bodyparts={bodyparts}
+            />
+            <ExercisePreview 
+            handleClose={handlePreviewClose}
+            handleShow={handlePreviewShow}
+            data={editExercise}
+            BackendUrl={BackendUrl}
+            show={showPreview}
+            editedIndex={editedIndex}
+            categories={categories}
+            bodyparts={bodyparts}
+            />
+            <ExerciseAddForm 
+            handleClose={handleAddClose}
+            handleShow={handleAddShow}
+            handleSubmit={handleNewSubmit}
+            data={editExercise}
+            setdata={setEditExercise}
+            parentData={exerciseData}
+            setParentData={setExerciseData}
+            BackendUrl={BackendUrl}
+            show={showAdd}
+            editedIndex={editedIndex}
+            setNewImage={setNewImage}
+            newImage={newImage}
+            newVideo={newVideo}
+            setNewVideo={setNewVideo}
+            categories={categories}
+            bodyparts={bodyparts}
+            />
+          <Row className='d-flex justify-content-center'>
+          {exerciseData?.map((exercise, index) => {
+                  return (
+                    <ExerciseCard
+                      key={exercise.id}
+                      arrayindex={index}
+                      setEditedIndex={setEditedIndex}
+                      handleEditExercise={handleEditExercise}
+                      handlePreviewExercise={handlePreviewExercise}
+                      id={exercise.id}
+                      data={exercise}
                     />
-                  <Column dataField="name" caption={"Name"} defaultSortOrder="asc"  />
-                  <Column dataField="description" caption={"Description"} hidingPriority={0} />
-                  <Column dataField="category" caption={"Category"} hidingPriority={4}>
-                    <Lookup dataSource={categories} />
-                  </Column>
-                  <Column dataField="bodypart" 
-                    caption={"Bodypart"} 
-                    hidingPriority={2} > 
-                    <Lookup dataSource={bodyparts} />
-                  </Column>
-                  <Column dataField="video" 
-                    caption={"Video"} 
-                    visible={false}
-                   />
-                  <Column dataField="image_url" 
-                    width={100}
-                    allowSorting={false}
-                    //cellRender= {cellRender}
-                    editCellRender={editImageCellRender}
-                    visible={false}
-                    caption="Image"
-                  />
-                    <Column dataField="video_url" 
-                    width={100}
-                    allowSorting={false}
-                    //cellRender= {cellRender}
-                    editCellRender={editVideoCellRender}
-                    visible={false}
-                    caption="Video"
-                  />
-                </DataGrid>
-              </div>
-      </div>
-    </div>
-  </React.Fragment>
-)};
+  
+                  );
+                })}
+                </Row>
+        </Container>
+      </React.Fragment>
+    )
+};
 
-function cellRender(data) {
-  return <img src={data.value || "/images/icons/exercise.png"} width="100%" alt='exercise' />;
-}
 
 
 

@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-function ClientEditForm(props) {
+function ExerciseAddForm(props) {
 
 /*     useEffect(() => {
         console.log(props.data);
@@ -31,38 +31,48 @@ function ClientEditForm(props) {
         props.setNewImage(value)
     }
 
+    function handleVideoChange(e) {
+        const value = e.target.files[0]
+
+        props.setNewVideo(value)
+    }
+
   return (
       <Modal show={props.show} onHide={props.handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Editing {props.data.firstname} {props.data.lastname}</Modal.Title>
+          <Modal.Title>Adding New Exercise</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form>
                 <Form.Group>
-                    <Form.Label>Firstname</Form.Label>
-                    <Form.Control type="text" name='firstname' value={props.data.firstname} onChange={handleOnChange} />
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" name='name' onChange={handleOnChange} />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Lastname</Form.Label>
-                    <Form.Control type="text" name='lastname' value={props.data.lastname} onChange={handleOnChange} />
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control as="textarea" rows={4} name='description' onChange={handleOnChange} />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" name='email' value={props.data.email} onChange={handleOnChange} />
+                    <Form.Label>Category</Form.Label>
+                    <Form.Select name='category' onChange={handleOnChange} >
+                            {props.categories.map( (x,y) => 
+                                <option key={y}>{x}</option> )}
+                    </Form.Select>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Type</Form.Label>
-                    <Form.Control as="select" name='usertype' value={props.data.usertype} onChange={handleOnChange}>
-                        <option>client</option>
-                    </Form.Control>
+                    <Form.Label>Body Part</Form.Label>
+                    <Form.Select name='bodypart' onChange={handleOnChange}>
+                        {props.bodyparts.map( (x,y) => 
+                            <option key={y}>{x}</option> )}
+                    </Form.Select>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Notes</Form.Label>
-                    <Form.Control as="textarea" rows={6} name='notes' value={props.data.notes} onChange={handleOnChange} />
+                    <Form.Label>Exercise Image</Form.Label>
+                    <Form.Control type="file"  name="imageupload" onChange={handleImageChange} />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Client Image</Form.Label>
-                    <Form.Control type="file"  name="avatar" onChange={handleImageChange} />
+                    <Form.Label>Exercise Video</Form.Label>
+                    <Form.Control type="file"  name="videoupload" onChange={handleVideoChange} />
                 </Form.Group>
             </Form>
         </Modal.Body>
@@ -78,4 +88,4 @@ function ClientEditForm(props) {
   );
 }
 
-export { ClientEditForm }
+export { ExerciseAddForm }
