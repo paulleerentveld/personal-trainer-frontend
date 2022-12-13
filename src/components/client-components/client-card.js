@@ -21,7 +21,7 @@ function handleClick() {
 
 
   return (
-    <Card style={{ width: '18rem' }} className="g-2 mx-2">
+    <Card style={{ width: '18rem' }} className="g-2 mx-2" onClick={handleClick}>
       <Card.Img variant="top" src={props.img} />
       <Card.Body>
         <Card.Title>{props.firstname} {props.lastname}</Card.Title>
@@ -35,8 +35,9 @@ function handleClick() {
             Notes: {props.notes}<br></br>
             ID: {props.id}
         </Card.Text>
-        <Button variant="primary" onClick={handleClick} >OpenClient</Button>
+        
       </Card.Body>
+      {/* <Button variant="primary" onClick={handleClick} >OpenClient</Button> */}
     </Card>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { clientstore } from '../../api/clients';
+// import { clientstore } from '../../api/clients';
 import { ClientCard } from '../../components/client-components/client-card'
 import { ClientEditForm } from '../../components/client-components/client-editform'
 import { ClientAddForm } from '../../components/client-components/client-addform'
@@ -8,6 +8,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'devextreme-react/button';
+import Stack from 'react-bootstrap/Stack';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import Form from 'react-bootstrap/Form';
 
 
 
@@ -30,6 +34,10 @@ export default function Client() {
   const [showAdd, setShowAdd] = useState(false);
   const [editedIndex, setEditedIndex] = useState();
   const [newImage, setNewImage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm] = useState(["firstname", "lastname", "sex", "email", "mobile"]);
+
+  const data = Object.values(clientData);
 
 
   const handleClose = () => {setShow(false); setEditClient({});}
@@ -37,6 +45,19 @@ export default function Client() {
 
   const handleAddClose = () => {setShowAdd(false); setEditClient({});}
   const handleAddShow = () => setShowAdd(true);
+
+  function search(clientData) {
+    return clientData.filter((client) => {
+        return searchTerm.some((newClient) => {
+            return (
+              client[newClient]
+                    .toString()
+                    .toLowerCase()
+                    .indexOf(searchQuery.toLowerCase()) > -1
+            );
+        });
+    });
+}
 
 /*   function handleSubmit(e) {
     e.preventDefault()
@@ -144,9 +165,16 @@ export default function Client() {
 
   return (
     <React.Fragment>
-              <div>
-            <Button variant="primary" onClick={handleAddShow} >Add</Button> 
-        </div>
+      <Container>
+        <Row className='d-flex justify-content-center'>
+          <Stack direction="horizontal" gap={1} className='d-flex justify-content-left'>
+            <FontAwesomeIcon icon={faUserPlus} className="g-2 mx-5 fa-2xl" onClick={handleAddShow} />
+            {/* <img src='\images\icons\add.png' className="add-button g-2 mx-5"  width={50} onClick={handleAddShow} ></img> */}
+            <Form.Control className="w-auto" placeholder="Search..." type="search"  name='name' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          </Stack>
+      </Row>
+    </Container>
+
       <Container>
         <ClientEditForm 
           handleClose={handleClose}
@@ -177,7 +205,7 @@ export default function Client() {
           newImage={newImage}
           />
         <Row className='d-flex justify-content-center'>
-        {clientData?.map((client, index) => {
+        {search(data).map((client, index) => {
                 return (
                   <ClientCard
                     key={client.id}

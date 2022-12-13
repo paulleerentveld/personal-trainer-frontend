@@ -37,6 +37,55 @@ function ExerciseEditForm(props) {
         props.setNewVideo(value)
     }
 
+    function handleDeleteExercise() {
+        const exercise = props.data.id
+        const exerciseIndex = props.editedIndex
+        const newExercises = [...props.parentData]
+        if (window.confirm('Are you sure you wish to delete this exercise?')) {
+        return  (fetch(BackendUrl+exercise, {
+            method: 'DELETE',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+               },
+          })
+            .then(response => response.json())
+            .then(success => {
+              console.log(success)
+              newExercises.splice(exerciseIndex,1)
+              props.setParentData(newExercises)
+              props.handleClose();
+              
+            })
+            .catch(error => console.log(error)
+          ));
+        }
+
+    }
+
+    const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
+
+    function deleteExercise() {
+        const exercise = props.data.id
+        const exerciseIndex = props.editedIndex
+        const newExercises = [...props.parentData]
+        fetch(BackendUrl+exercise, {
+            method: 'DELETE',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8' // Indicates the content 
+               },
+          })
+            .then(response => response.json())
+            .then(success => {
+              console.log(success)
+              newExercises.splice(exerciseIndex,1)
+              props.setParentData(newExercises)
+              props.handleClose();
+              
+            })
+            .catch(error => console.log(error)
+          );
+    }
+
   return (
       <Modal show={props.show} onHide={props.handleClose}>
         <Modal.Header closeButton>
@@ -82,6 +131,9 @@ function ExerciseEditForm(props) {
           </Button>
           <Button variant="primary" onClick={props.handleSubmit}>
             Save Changes
+          </Button>
+          <Button variant="danger" onClick={handleDeleteExercise}>
+            Delete Exercise
           </Button>
         </Modal.Footer>
       </Modal>
