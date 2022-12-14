@@ -12,6 +12,8 @@ import Stack from 'react-bootstrap/Stack';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
+import AlertMessage from '../../components/alerts/alert'
 
 
 
@@ -36,9 +38,24 @@ export default function Client() {
   const [newImage, setNewImage] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm] = useState(["firstname", "lastname", "sex", "email", "mobile"]);
+  const [showMessage, setShowMessage] = useState(false);
+  const [messageVariant, setMessageVariant] = useState();
+  const [showAlert, setShowAlert] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [messages, setMessages] = useState();
 
   const data = Object.values(clientData);
 
+  const handleError = response => {
+    if (!response.ok) { 
+       //throw Error(response.statusText)
+       throw setMessages(response.statusText)
+
+       //throw Error("error messages");
+    } else {
+       return response.json();
+    }
+ };
 
   const handleClose = () => {setShow(false); setEditClient({});}
   const handleShow = () => setShow(true);
@@ -59,28 +76,6 @@ export default function Client() {
     });
 }
 
-/*   function handleSubmit(e) {
-    e.preventDefault()
-    const newClients = [...clientData]
-    newClients[editedIndex] = editClient
-        fetch(BackendUrl+editClient.id, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(editClient),
-        })
-          .then(response => response.json())
-          .then(success => {
-            console.log(success)
-            setClientData(newClients)
-            handleClose();
-            
-          })
-          .catch(error => console.log(error)
-        );
-  } */
-
   function handleSubmit(e) {
     e.preventDefault()
     const formData = new FormData()
@@ -100,15 +95,20 @@ export default function Client() {
           method: 'PATCH',
           body: formData,
         })
-          .then(response => response.json())
+          .then(handleError)
           .then(success => {
             newClients[editedIndex].avatar_url = success.avatar_url
             setClientData(newClients)
             handleClose();
-            console.log(success)
-            
+            setMessages("User Record Successfully Saved")
+            console.log("success")
+            setMessageVariant("success")
+            setShowMessage(true)
           })
-          .catch(error => console.log(error)
+          .catch(error => {
+            setMessageVariant("danger")
+            setShowMessage(true)
+          }
         );
   }
 
@@ -131,28 +131,46 @@ export default function Client() {
           method: 'POST',
           body: formData,
         })
-          .then(response => response.json())
+          .then(handleError)
           .then(success => {
             newClients.push(success)
             setClientData(newClients)
             handleAddClose();
-            console.log(success)
-            
+            console.log("success")
+            setMessages("New User Successfully Created")
+            setMessageVariant("success")
+            setShowMessage(true)
           })
-          .catch(error => console.log(error)
-        );
+          .catch(error => {
+            setMessageVariant("danger")
+            setShowMessage(true)
+          });
   }
 
   useEffect(() => {
     fetch(BackendUrl)
-    .then(response => response.json())
-    .then(data => setClientData(data))
+    .then(handleError)
+    .then(data => {
+      setClientData(data)
+      console.log("success")
+    })
+    .catch(error => {
+      setMessageVariant("danger")
+      setShowMessage(true)
+    })
   },[]);
 
   function fetchClient(id) {
     fetch(BackendUrl+"/"+id)
-    .then(response => response.json())
-    .then(data => setEditClient(data))
+    .then(handleError)
+    .then(data => {
+      setEditClient(data)
+      console.log("success")
+    })
+    .catch(error => {
+      setMessageVariant("danger")
+      setShowMessage(true)
+    })
   }
   
   function handleEditClient(id) {
@@ -161,10 +179,44 @@ export default function Client() {
     //console.log(editClient)
   }
 
+  function handleDeleteClient() {
+    const client = editClient.id
+    const clientIndex = editedIndex
+    const newClients = [...clientData]
+    if (window.confirm('Are you sure you wish to delete this user?')) {
+        fetch(BackendUrl+client, {
+            method: 'DELETE',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+               },
+          })
+            .then(handleError)
+            .then(success => {
+              console.log(success)
+              newClients.splice(clientIndex,1)
+              setClientData(newClients)
+              handleClose()
+              setMessages("User Successfully Deleted")
+              setMessageVariant("success")
+              setShowMessage(true)
+            })
+            .catch(error => {
+              setMessageVariant("danger")
+              setShowMessage(true)
+              console.log(error)
+              console.log(messages)
+            }
+          )
+    }
+}
+
  
 
   return (
     <React.Fragment>
+      {/* {showAlert? <Alert variant="danger" onClose={() => {setShowAlert(false); setMessages()}} dismissible>{messages}</Alert> : null} */}
+      {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
+      {/* {showSuccess? <AlertMessage variant={"success"}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null } */}
       <Container>
         <Row className='d-flex justify-content-center'>
           <Stack direction="horizontal" gap={1} className='d-flex justify-content-left'>
@@ -189,6 +241,7 @@ export default function Client() {
           editedIndex={editedIndex}
           setNewImage={setNewImage}
           newImage={newImage}
+          handleDeleteClient={handleDeleteClient}
           />
           <ClientAddForm 
           handleClose={handleAddClose}

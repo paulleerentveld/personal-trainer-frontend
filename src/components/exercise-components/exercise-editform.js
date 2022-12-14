@@ -59,7 +59,6 @@ function ExerciseEditForm(props) {
             .catch(error => console.log(error)
           ));
         }
-
     }
 
     const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
@@ -104,6 +103,7 @@ function ExerciseEditForm(props) {
                 <Form.Group>
                     <Form.Label>Category</Form.Label>
                     <Form.Select name='category' value={props.data.category} onChange={handleOnChange} >
+                                <option></option>
                             {props.categories.map( (x,y) => 
                                 <option key={y}>{x}</option> )}
                     </Form.Select>
@@ -111,6 +111,7 @@ function ExerciseEditForm(props) {
                 <Form.Group>
                     <Form.Label>Body Part</Form.Label>
                     <Form.Select name='bodypart' value={props.data.bodypart} onChange={handleOnChange}>
+                            <option></option>
                         {props.bodyparts.map( (x,y) => 
                             <option key={y}>{x}</option> )}
                     </Form.Select>
@@ -132,7 +133,7 @@ function ExerciseEditForm(props) {
           <Button variant="primary" onClick={props.handleSubmit}>
             Save Changes
           </Button>
-          <Button variant="danger" onClick={handleDeleteExercise}>
+          <Button variant="danger" onClick={props.handleDeleteExercise}>
             Delete Exercise
           </Button>
         </Modal.Footer>

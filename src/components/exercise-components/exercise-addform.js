@@ -55,13 +55,15 @@ function ExerciseAddForm(props) {
                 <Form.Group>
                     <Form.Label>Category</Form.Label>
                     <Form.Select name='category' onChange={handleOnChange} >
+                    <option key = 'blankChoice' hidden value></option>
                             {props.categories.map( (x,y) => 
                                 <option key={y}>{x}</option> )}
                     </Form.Select>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Body Part</Form.Label>
-                    <Form.Select name='bodypart' onChange={handleOnChange}>
+                    <Form.Select name='bodypart' onChange={handleOnChange} >
+                    <option key = 'blankChoice' hidden value></option>
                         {props.bodyparts.map( (x,y) => 
                             <option key={y}>{x}</option> )}
                     </Form.Select>

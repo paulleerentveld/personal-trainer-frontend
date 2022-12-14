@@ -12,7 +12,6 @@ function ClientEditForm(props) {
     }) */
 
 
-
     function handleOnChange(e) {
         const value = e.target.value
         const name = e.target.name
@@ -31,36 +30,6 @@ function ClientEditForm(props) {
         props.setNewImage(value)
     }
 
-    function handleDeleteClient() {
-        if (window.confirm('Are you sure you wish to delete this item?')) {
-        return deleteClient();
-        }
-
-    }
-
-    const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/clients/";
-
-    function deleteClient() {
-        const client = props.data.id
-        const clientIndex = props.editedIndex
-        const newClients = [...props.parentData]
-        fetch(BackendUrl+client, {
-            method: 'DELETE',
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8'
-               },
-          })
-            .then(response => response.json())
-            .then(success => {
-              console.log(success)
-              newClients.splice(clientIndex,1)
-              props.setParentData(newClients)
-              props.handleClose();
-              
-            })
-            .catch(error => console.log(error)
-          );
-    }
 
 
 
@@ -128,7 +97,7 @@ function ClientEditForm(props) {
                 <Button className='mx-1' type='submit' variant="primary" >
                     Save Changes
                 </Button>
-                <Button className='mx-1' variant="danger" onClick={handleDeleteClient}>
+                <Button className='mx-1' variant="danger" onClick={props.handleDeleteClient}>
                     Delete Client
                 </Button>
             </Form>

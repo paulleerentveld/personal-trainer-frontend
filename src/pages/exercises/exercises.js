@@ -18,6 +18,7 @@ import { ExerciseCard } from '../../components/exercise-components/exercise-card
 import { ExerciseEditForm } from '../../components/exercise-components/exercise-editform'
 import { ExercisePreview } from '../../components/exercise-components/exercise-preview'
 import { ExerciseAddForm } from '../../components/exercise-components/exercise-addform'
+import AlertMessage from '../../components/alerts/alert'
 
 
 const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
@@ -59,9 +60,19 @@ export default function Exercise() {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchTerm] = useState(["name", "description", "category", "bodypart"]);
     const [filterParam, setFilterParam] = useState(["All"]);
+    const [showMessage, setShowMessage] = useState(false);
+    const [messageVariant, setMessageVariant] = useState();
+    const [messages, setMessages] = useState();
 
     const data = Object.values(exerciseData);  
-    
+
+    const handleError = response => {
+        if (!response.ok) { 
+           throw setMessages(response.statusText)
+        } else {
+           return response.json();
+        }
+     };    
   
     const handleClose = () => {setShow(false); setEditExercise({});}
     const handleShow = () => setShow(true);
@@ -113,14 +124,21 @@ export default function Exercise() {
             method: 'PATCH',
             body: formData,
           })
-            .then(response => response.json())
+            .then(handleError)
             .then(success => {
                 newExercises[editedIndex].imageupload_url = success.imageupload_url
               setExerciseData(newExercises)
               handleClose();
-              console.log(success)              
+              console.log(success)
+              setMessages("Exercise Record Successfully Saved")
+              setMessageVariant("success")
+              setShowMessage(true)           
             })
-            .catch(error => console.log(error)
+            .catch(error => {
+                console.log(error)
+                setMessageVariant("danger")
+                setShowMessage(true)
+            }
           );
     }
 
@@ -138,27 +156,44 @@ export default function Exercise() {
               method: 'POST',
               body: formData,
             })
-              .then(response => response.json())
+              .then(handleError)
               .then(success => {
                 newExercises.push(success)
                 setExerciseData(newExercises)
                 handleAddClose();
-                console.log(success)              
+                console.log(success) 
+                setMessages("New Exercise Successfully Added")
+                setMessageVariant("success")
+                setShowMessage(true)              
               })
-              .catch(error => console.log(error)
+              .catch(error => {
+                console.log(error)
+                setMessageVariant("danger")
+                setShowMessage(true)
+            }
             );
       }
   
     useEffect(() => {
       fetch(BackendUrl)
-      .then(response => response.json())
+      .then(handleError)
       .then(data => setExerciseData(data))
+      .catch(error => {
+        console.log(error)
+        setMessageVariant("danger")
+        setShowMessage(true)
+    })
     },[]);
   
     function fetchClient(id) {
       fetch(BackendUrl+"/"+id)
-      .then(response => response.json())
+      .then(handleError)
       .then(data => setEditExercise(data))
+      .catch(error => {
+        console.log(error)
+        setMessageVariant("danger")
+        setShowMessage(true)
+    })
     }
     
     function handleEditExercise(id) {
@@ -172,11 +207,43 @@ export default function Exercise() {
         handlePreviewShow();
         //console.log(editClient)
       }
+
+    function handleDeleteExercise() {
+    const exercise = editExercise.id
+    const exerciseIndex = editedIndex
+    const newExercises = [...exerciseData]
+    if (window.confirm('Are you sure you wish to delete this exercise?')) {
+    return  (fetch(BackendUrl+exercise, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+            },
+        })
+        .then(handleError)
+        .then(success => {
+            console.log(success)
+            newExercises.splice(exerciseIndex,1)
+            setExerciseData(newExercises)
+            handleClose();
+            setMessages("Exercise Successfully Deleted")
+            setMessageVariant("success")
+            setShowMessage(true)  
+            
+        })
+        .catch(error => {
+            console.log(error)
+            setMessageVariant("danger")
+            setShowMessage(true)
+        }
+        ));
+    }
+}
   
    
   
     return (
       <React.Fragment>
+        {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
         <Container>
             <Row className='d-flex justify-content-center'>
                 <Stack direction="horizontal" gap={1} className='d-flex justify-content-left'>
@@ -212,6 +279,7 @@ export default function Exercise() {
             setNewVideo={setNewVideo}
             categories={categories}
             bodyparts={bodyparts}
+            handleDeleteExercise={handleDeleteExercise}
             />
             <ExercisePreview 
             handleClose={handlePreviewClose}
