@@ -4,10 +4,6 @@ import { Popup } from 'devextreme-react/popup';
 import ScrollView from 'devextreme-react/scroll-view';
 import {formatDate}  from 'devextreme/localization';
 import { programsstore } from '../../api/programs';
-//import { clientstore } from '../../api/clients';
-//import { workoutsstore } from '../../api/workouts';
-//import Query from 'devextreme/data/query';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './programs.scss';
 import { Table } from 'reactstrap';
 import { WorkoutPreview } from '../../components/workout-components/workout-preview'

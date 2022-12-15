@@ -1,17 +1,14 @@
 ## Personal Trainer App - Frontend React
 This is my phase 5 project App. The app allows a Personal Trainer to setup their clients, create exercises and upload photos/videos, generate workout templates and schedule workouts and link to clients and workout templates. 
 
-## Limitations
-- Add clients and exercises you cannot upload images/vidoes at new record creation. There needs to be a record to attach to. This needs more work to allow file upload on form submission. 
-
 
 ## Dependancies
-Main libraries I used are Devextreme for the Grids, menus and other components. These should load on install bundle.  
-Auth0 is used for the authentication. There is no register option.
+I used Devextreme components for navbars and the scheduler and React Bootstrap for most other components. These should load on install bundle.  
+Auth0 is used for the authentication. There is no register option and only the trainer can login at this stage. 
 
 ## Install Steps
 - Download and run npm install
-- Populate .ENV file with Auth0 domain and client id. 
+- Populate .ENV file with Auth0 domain and client id. (See example below) 
 - Make local server run on port 3000.
 - Make sure backed is running on port 3001 or change in .ENV file on react to point to your server. 
 - npm start 

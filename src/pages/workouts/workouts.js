@@ -1,10 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-//import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, SelectBox, Lookup, SearchPanel,} from 'devextreme-react/data-grid';
-import { Item, GroupItem, Label, SimpleItem } from 'devextreme-react/form';
-import { exercisestore } from '../../api/exercises';
 import './workouts.scss';
 import ReactPlayer from 'react-player'
-import Button from 'devextreme-react/button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -22,8 +18,6 @@ import { ExercisePreview } from '../../components/exercise-components/exercise-p
 
 const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/workouts/";
 const ExercisesBackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
-
-const notesEditorOptions = { height: 200 };
 
 const workoutType = [
   'Bodybuilding',
