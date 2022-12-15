@@ -91,18 +91,18 @@ function ExerciseEditForm(props) {
           <Modal.Title>Editing {props.data.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form>
+            <Form onSubmit={props.handleSubmit}>
                 <Form.Group>
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" name='name' value={props.data.name} onChange={handleOnChange} />
+                    <Form.Control required type="text" name='name' value={props.data.name} onChange={handleOnChange} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" rows={4} name='description' value={props.data.description} onChange={handleOnChange} />
+                    <Form.Control required as="textarea" rows={4} name='description' value={props.data.description} onChange={handleOnChange} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Category</Form.Label>
-                    <Form.Select name='category' value={props.data.category} onChange={handleOnChange} >
+                    <Form.Select required name='category' value={props.data.category} onChange={handleOnChange} >
                                 <option></option>
                             {props.categories.map( (x,y) => 
                                 <option key={y}>{x}</option> )}
@@ -110,7 +110,7 @@ function ExerciseEditForm(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Body Part</Form.Label>
-                    <Form.Select name='bodypart' value={props.data.bodypart} onChange={handleOnChange}>
+                    <Form.Select required name='bodypart' value={props.data.bodypart} onChange={handleOnChange}>
                             <option></option>
                         {props.bodyparts.map( (x,y) => 
                             <option key={y}>{x}</option> )}
@@ -124,19 +124,20 @@ function ExerciseEditForm(props) {
                     <Form.Label>Exercise Video</Form.Label>
                     <Form.Control type="file"  name="videoupload" onChange={handleVideoChange} />
                 </Form.Group>
+                <br></br>
+                <Form.Group>
+                    <Button className='mx-1' variant="secondary" onClick={props.handleClose}>
+                        Close
+                    </Button>
+                    <Button className='mx-1' variant="primary" type="submit" >
+                        Save Changes
+                    </Button>
+                    <Button className='mx-1' variant="danger" onClick={props.handleDeleteExercise}>
+                        Delete Exercise
+                    </Button>
+                </Form.Group>
             </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={props.handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={props.handleSubmit}>
-            Save Changes
-          </Button>
-          <Button variant="danger" onClick={props.handleDeleteExercise}>
-            Delete Exercise
-          </Button>
-        </Modal.Footer>
       </Modal>
   );
 }

@@ -1,12 +1,29 @@
-import React from 'react';
-import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, MasterDetail, Lookup, SearchPanel, } from 'devextreme-react/data-grid';
-import { Item } from 'devextreme-react/form';
-import TagBox from 'devextreme-react/tag-box';
-import { workoutsstore } from '../../api/workouts';
+import React, { useState, useCallback, useEffect } from 'react';
+//import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, SelectBox, Lookup, SearchPanel,} from 'devextreme-react/data-grid';
+import { Item, GroupItem, Label, SimpleItem } from 'devextreme-react/form';
 import { exercisestore } from '../../api/exercises';
-import { ExercisesTagBox } from '../../components/exercises-tagbox/ExercisesTagBox'
-import { Table } from 'reactstrap';
 import './workouts.scss';
+import ReactPlayer from 'react-player'
+import Button from 'devextreme-react/button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Stack from 'react-bootstrap/Stack';
+import Form from 'react-bootstrap/Form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { WorkoutCard } from '../../components/workout-components/workout-card'
+import { WorkoutEditForm } from '../../components/workout-components/workout-editform'
+import { WorkoutPreview } from '../../components/workout-components/workout-preview'
+import { WorkoutAddForm } from '../../components/workout-components/workout-addform'
+import AlertMessage from '../../components/alerts/alert'
+import { ExercisePreview } from '../../components/exercise-components/exercise-preview'
+
+
+const BackendUrl = process.env.REACT_APP_BACKEND_URL+"/workouts/";
+const ExercisesBackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
+
+const notesEditorOptions = { height: 200 };
 
 const workoutType = [
   'Bodybuilding',
@@ -16,122 +33,318 @@ const workoutType = [
 ];
 
 
-const exerciseDetails = ({ data }) => {
-  function getExercises()  {
+
+export default function Workout() {
+    const [workoutData, setWorkoutData] = useState([])
+    const [editWorkout, setEditWorkout] = useState({})
+    const [exerciseList, setExerciseList] = useState([])
+    const [show, setShow] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
+    const [exercisePreview, setExercisePreview] = useState({});
+    const [showAdd, setShowAdd] = useState(false);
+    const [showExercise, setShowExercise] = useState(false);
+    const [editedIndex, setEditedIndex] = useState();
+    const [newImage, setNewImage] = useState(null);
+    const [newVideo, setNewVideo] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchTerm] = useState(["name"]);
+    const [filterParam, setFilterParam] = useState(["All"]);
+    const [showMessage, setShowMessage] = useState(false);
+    const [messageVariant, setMessageVariant] = useState();
+    const [messages, setMessages] = useState();
+
+    const data = Object.values(workoutData);  
+
+    const handleError = response => {
+        if (!response.ok) { 
+           throw setMessages(response.statusText)
+        } else {
+           return response.json();
+        }
+     };    
+  
+    const handleClose = () => {setShow(false); setEditWorkout({});}
+    const handleShow = () => setShow(true);
+
+    const handlePreviewClose = () => {setShowPreview(false); setEditWorkout({});}
+    const handlePreviewShow = () => setShowPreview(true);
+
+    const handleExerciseShow = () => setShowExercise(true);
+    const handleExerciseClose = () => {setShowExercise(false);};
+    const handleExercisePreview = (exercise) => {setExercisePreview(exercise);handleExerciseShow();}
+
+    const handleAddClose = () => {setShowAdd(false); setEditWorkout({});}
+    const handleAddShow = () => setShowAdd(true);
+
+    function search(workoutData) {
+        return workoutData.filter((workout) => {
+            if (workout.workouttype == filterParam) {
+                return searchTerm.some((newWorkout) => {
+                    return (
+                        workout[newWorkout]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(searchQuery.toLowerCase()) > -1
+                    );
+                });
+            } else if (filterParam == "All") {
+                return searchTerm.some((newWorkout) => {
+                    return (
+                        workout[newWorkout]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(searchQuery.toLowerCase()) > -1
+                    );
+                });
+            }
+        });
+    }
+  
+
+  
+    function handleSubmit(e) {
+      e.preventDefault()
+      const formData = new FormData()
+      formData.append('name', editWorkout.name)
+      formData.append('workouttype', editWorkout.workouttype)
+      editWorkout.exercises?.map((exercise) => {
+        formData.append('exercise_ids[]', exercise.id)
+      })
+      const newWorkouts = [...workoutData]
+      newWorkouts[editedIndex] = editWorkout
+          fetch(BackendUrl+editWorkout.id, {
+            method: 'PATCH',
+            body: formData,
+          })
+            .then(handleError)
+            .then(success => {
+              setWorkoutData(newWorkouts)
+              handleClose();
+              console.log(success)
+              setMessages("Workout Record Successfully Saved")
+              setMessageVariant("success")
+              setShowMessage(true)           
+            })
+            .catch(error => {
+                console.log(error)
+                setMessageVariant("danger")
+                setShowMessage(true)
+            }
+          );
+    }
+
+    function handleNewSubmit(e) {
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append('name', editWorkout.name)
+        formData.append('workouttype', editWorkout.workouttype)
+        editWorkout.exercises?.map((exercise) => {
+          formData.append('exercise_ids[]', exercise.id)
+        })
+        const newWorkouts = [...workoutData]
+            fetch(BackendUrl, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(handleError)
+              .then(success => {
+                newWorkouts.push(success)
+                setWorkoutData(newWorkouts)
+                handleAddClose();
+                console.log(success) 
+                setMessages("New Workout Successfully Added")
+                setMessageVariant("success")
+                setShowMessage(true)              
+              })
+              .catch(error => {
+                console.log(error)
+                setMessageVariant("danger")
+                setShowMessage(true)
+            }
+            );
+      }
+  
+    useEffect(() => {
+      fetch(BackendUrl)
+      .then(handleError)
+      .then(data => setWorkoutData(data))
+      .catch(error => {
+        console.log(error)
+        setMessageVariant("danger")
+        setShowMessage(true)
+    })
+    },[]);
+
+    useEffect(() => {
+      fetch(ExercisesBackendUrl)
+      .then(handleError)
+      .then(data => setExerciseList(data))
+      .catch(error => {
+        console.log(error)
+        setMessageVariant("danger")
+        setShowMessage(true)
+    })
+    },[]);
+  
+    function fetchClient(id) {
+      fetch(BackendUrl+"/"+id)
+      .then(handleError)
+      .then(data => setEditWorkout(data))
+      //.then(data => console.log('oneditfetch',data))
+      .catch(error => {
+        console.log(error)
+        setMessageVariant("danger")
+        setShowMessage(true)
+    })
+    }
     
-  }
+    function handleEditWorkout(id) {
+      fetchClient(id);
+      handleShow();
+      //console.log(editClient)
+    }
 
-  const Exercise = ({ name, image, description, video }) => (
-        <tr>
-          <td><img src={image} width={"60"} /></td>
-          <td>{name}</td>
-          <td style={ {width: 500, maxWidth: 500, wordBreak: 'break-all' } }>{description}</td>
-          {/* <td><video width="100" controls src={video} ></video> </td> */}
-        </tr>
-  );
+    function handlePreviewWorkout(id) {
+        fetchClient(id);
+        handlePreviewShow();
+        //console.log(editClient)
+      }
 
-  return (
-      <div >
-        <p><strong>Exercises</strong></p>
-        <Table bordered responsive>
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-          {data.exercises.map((exercise) => (
-            <Exercise
-              name={exercise.name}
-              image={exercise.imageupload_url || '/images/icons/exercise.png'}
-              // video={exercise.videoupload_url || '/images/icons/exercise.png'}
-              description={exercise.description}
-              key={exercise.id}
+    function handleDeleteWorkout() {
+    const workout = editWorkout.id
+    const workoutIndex = editedIndex
+    const newWorkouts = [...workoutData]
+    if (window.confirm('Are you sure you wish to delete this workout?')) {
+    return  (fetch(BackendUrl+workout, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+            },
+        })
+        .then(handleError)
+        .then(success => {
+            console.log(success)
+            newWorkouts.splice(workoutIndex,1)
+            setWorkoutData(newWorkouts)
+            handleClose();
+            setMessages("Workout Successfully Deleted")
+            setMessageVariant("success")
+            setShowMessage(true)  
+            
+        })
+        .catch(error => {
+            console.log(error)
+            setMessageVariant("danger")
+            setShowMessage(true)
+        }
+        ));
+    }
+}
+  
+   
+  
+    return (
+      <React.Fragment>  
+                          {/* <Button onClick={() => { handleExercisePreview();}} >Open</Button>       */}
+        <Container>
+            <Row className='d-flex justify-content-center'>
+                <Stack direction="horizontal" gap={1} className='d-flex justify-content-left '>
+                    <FontAwesomeIcon icon={faPlus} className="g-2 mx-3 fa-2xl" onClick={handleAddShow} />
+                    <Stack gap={1} className='d-flex justify-content-center'>
+                    <Form.Control className="" placeholder="Search..." type="text"  name='name' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                    <Form.Select className="" onChange={(e) => {setFilterParam(e.target.value);}}>
+                        <option value="All">Filter By Type</option>
+                        {workoutType.map((type) => {
+                            return (
+                                <option value={type}>{type}</option>
+                            );
+                            })}
+                    </Form.Select> 
+                    </Stack>
+                </Stack>
+            </Row>
+        </Container>
+        <Container>
+          <WorkoutEditForm 
+            handleClose={handleClose}
+            handleShow={handleShow}
+            handleSubmit={handleSubmit}
+            data={editWorkout}
+            setdata={setEditWorkout}
+            parentData={workoutData}
+            setParentData={setWorkoutData}
+            BackendUrl={BackendUrl}
+            show={show}
+            editedIndex={editedIndex}
+            setNewImage={setNewImage}
+            newImage={newImage}
+            newVideo={newVideo}
+            setNewVideo={setNewVideo}
+            workoutType={workoutType}
+            handleDeleteWorkout={handleDeleteWorkout}
+            exerciseList={exerciseList}
             />
-          ))}
-          </tbody>
-        </Table>
-      </div>
-  );
+            <WorkoutPreview 
+            handleClose={handlePreviewClose}
+            handleShow={handlePreviewShow}
+            data={editWorkout}
+            BackendUrl={BackendUrl}
+            showPreview={showPreview}
+            editedIndex={editedIndex}
+            workoutType={workoutType}
+            setExercisePreview={setExercisePreview}
+            handleExercisePreview={handleExercisePreview}
+            />
+            <ExercisePreview 
+            handleClose={handleExerciseClose}
+            handleShow={handleExerciseShow}
+            data={exercisePreview}
+            BackendUrl={ExercisesBackendUrl}
+            show={showExercise}
+            editedIndex={editedIndex}
+            />
+            <WorkoutAddForm 
+            handleClose={handleAddClose}
+            handleShow={handleAddShow}
+            handleSubmit={handleNewSubmit}
+            data={editWorkout}
+            setdata={setEditWorkout}
+            parentData={workoutData}
+            setParentData={setWorkoutData}
+            BackendUrl={BackendUrl}
+            show={showAdd}
+            editedIndex={editedIndex}
+            setNewImage={setNewImage}
+            newImage={newImage}
+            newVideo={newVideo}
+            setNewVideo={setNewVideo}
+            workoutType={workoutType}
+            exerciseList={exerciseList}
+            />
+          <Row className='d-flex justify-content-center'>
+          {search(data).map((workout, index) => {
+                  return (
+                    <WorkoutCard
+                      key={workout.id}
+                      arrayindex={index}
+                      setEditedIndex={setEditedIndex}
+                      handleEditWorkout={handleEditWorkout}
+                      handlePreviewWorkout={handlePreviewWorkout}
+                      id={workout.id}
+                      data={workout}
+                    />
+  
+                  );
+                })}
+                </Row>
+        </Container>
+        {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
+      </React.Fragment>
+    )
 };
 
 
-export default function Workout() {
 
-  function cellTemplate(container, options) {
-    const noBreakSpace = '\u00A0';
-    const text = (options.value || []).map((element) => options.column.lookup.calculateCellValue(element)).join(', ');
-    container.textContent = text || noBreakSpace;
-    container.title = text;
-  }
 
-  function calculateFilterExpression(filterValue, selectedFilterOperation, target) {
-    if (target === 'search' && typeof (filterValue) === 'string') {
-      return [this.dataField, 'contains', filterValue];
-    }
-    return function(data) {
-      return (data.exercise_ids || []).indexOf(filterValue) !== -1;
-    };
-  }
 
-return (
-  <React.Fragment>
-    <h2 className={'content-block'}>Workouts</h2>
-    <div className={'content-block'}>
-      <div className={'dx-card responsive-paddings'}>
-      <div id="data-grid">
-              <DataGrid
-                dataSource={workoutsstore}
-                showBorders={true}
-                focusedRowEnabled={true}
-                columnAutoWidth={true}
-                columnHidingEnabled={true}
-                wordWrapEnabled={true}
-              >
-                <Paging enabled={false} />
-                <SearchPanel visible={true} width="200" />
-                <Editing
-                  mode="popup"
-                  allowUpdating={true}
-                  allowAdding={true}
-                  allowDeleting={true}>
-                  <Popup title="Workout Details" showTitle={true} />
-                  <Form>
-                    <Item itemType="group" colCount={2} colSpan={2}>
-                      <Item dataField="name" caption={"Name"} />
-                      <Item dataField="workouttype" caption={"Type"} />
-                      <Item dataField="exercise_ids" caption={"Exercises"}  />
-                    </Item>
-                  </Form>
-                </Editing>
-                <FilterRow visible={true} />
-                <Column dataField="name" caption={"Name"} width="120"  />
-                <Column dataField="workouttype" caption={"Workout Type"} >
-                  <Lookup dataSource={workoutType} />
-                </Column>
-                <Column
-                  dataField="exercise_ids"
-                  caption="Exercises"
-                  width={200}
-                  allowSorting={false}
-                  editCellComponent={ExercisesTagBox}
-                  cellTemplate={cellTemplate}
-                  calculateFilterExpression={calculateFilterExpression}>
-                  <Lookup
-                    dataSource={exercisestore}
-                    valueExpr="id"
-                    displayExpr="name"
-                  />
-                </Column>
-                <MasterDetail 
-                  enabled={true}
-                  render={exerciseDetails}
-                />
-              </DataGrid>
-            </div>
-      </div>
-    </div>
-  </React.Fragment>
-)};
+

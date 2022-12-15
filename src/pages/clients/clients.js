@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-// import { clientstore } from '../../api/clients';
 import { ClientCard } from '../../components/client-components/client-card'
 import { ClientEditForm } from '../../components/client-components/client-editform'
 import { ClientAddForm } from '../../components/client-components/client-addform'
@@ -7,12 +6,10 @@ import './clients.scss';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Button from 'devextreme-react/button';
 import Stack from 'react-bootstrap/Stack';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert';
 import AlertMessage from '../../components/alerts/alert'
 
 
@@ -40,18 +37,13 @@ export default function Client() {
   const [searchTerm] = useState(["firstname", "lastname", "sex", "email", "mobile"]);
   const [showMessage, setShowMessage] = useState(false);
   const [messageVariant, setMessageVariant] = useState();
-  const [showAlert, setShowAlert] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [messages, setMessages] = useState();
 
   const data = Object.values(clientData);
 
   const handleError = response => {
     if (!response.ok) { 
-       //throw Error(response.statusText)
        throw setMessages(response.statusText)
-
-       //throw Error("error messages");
     } else {
        return response.json();
     }
@@ -100,8 +92,8 @@ export default function Client() {
             newClients[editedIndex].avatar_url = success.avatar_url
             setClientData(newClients)
             handleClose();
-            setMessages("User Record Successfully Saved")
             console.log("success")
+            setMessages("User Record Successfully Saved")
             setMessageVariant("success")
             setShowMessage(true)
           })
@@ -123,7 +115,7 @@ export default function Client() {
     formData.append('weight', editClient.weight)
     formData.append('sex', editClient.sex)
     formData.append('dob', editClient.dob)
-    formData.append('notes', editClient.notes)
+    editClient.notes && formData.append('notes', editClient.notes)
     newImage && formData.append('avatar', newImage)
     const newClients = [...clientData]
     
@@ -214,9 +206,7 @@ export default function Client() {
 
   return (
     <React.Fragment>
-      {/* {showAlert? <Alert variant="danger" onClose={() => {setShowAlert(false); setMessages()}} dismissible>{messages}</Alert> : null} */}
-      {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
-      {/* {showSuccess? <AlertMessage variant={"success"}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null } */}
+      
       <Container>
         <Row className='d-flex justify-content-center'>
           <Stack direction="horizontal" gap={1} className='d-flex justify-content-left'>
@@ -283,6 +273,7 @@ export default function Client() {
               })}
               </Row>
       </Container>
+      {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
     </React.Fragment>
   )};
 

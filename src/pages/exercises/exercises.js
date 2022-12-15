@@ -1,10 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-//import DataGrid, { Column, Editing, Popup, Paging, FilterRow, Form, SelectBox, Lookup, SearchPanel,} from 'devextreme-react/data-grid';
-import { Item, GroupItem, Label, SimpleItem } from 'devextreme-react/form';
-import { exercisestore } from '../../api/exercises';
 import './exercises.scss';
 import ReactPlayer from 'react-player'
-import Button from 'devextreme-react/button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,8 +8,6 @@ import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-
-
 import { ExerciseCard } from '../../components/exercise-components/exercise-card'
 import { ExerciseEditForm } from '../../components/exercise-components/exercise-editform'
 import { ExercisePreview } from '../../components/exercise-components/exercise-preview'
@@ -242,15 +236,14 @@ export default function Exercise() {
    
   
     return (
-      <React.Fragment>
-        {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
+      <React.Fragment>        
         <Container>
             <Row className='d-flex justify-content-center'>
-                <Stack direction="horizontal" gap={1} className='d-flex justify-content-left'>
-                    <FontAwesomeIcon icon={faPlus} className="g-2 mx-5 fa-2xl" onClick={handleAddShow} />
-                    {/* <img src='\images\icons\add.png' className="add-button g-2 mx-5"  width={50} onClick={handleAddShow} ></img> */}
-                    <Form.Control className="w-auto" placeholder="Search..." type="text"  name='name' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                    <Form.Select onChange={(e) => {setFilterParam(e.target.value);}}>
+                <Stack direction="horizontal" gap={1} className='d-flex justify-content-left '>
+                    <FontAwesomeIcon icon={faPlus} className="g-2 mx-3 fa-2xl" onClick={handleAddShow} />
+                    <Stack gap={1} className='d-flex justify-content-center'>
+                    <Form.Control className="" placeholder="Search..." type="text"  name='name' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                    <Form.Select className="" onChange={(e) => {setFilterParam(e.target.value);}}>
                         <option value="All">Filter By Category</option>
                         {categories.map((category) => {
                             return (
@@ -258,6 +251,7 @@ export default function Exercise() {
                             );
                             })}
                     </Form.Select> 
+                    </Stack>
                 </Stack>
             </Row>
         </Container>
@@ -326,6 +320,7 @@ export default function Exercise() {
                 })}
                 </Row>
         </Container>
+        {showMessage? <AlertMessage variant={messageVariant}  message={messages} setMessages={setMessages} showMessage={showMessage} setShowMessage={setShowMessage} /> : null }
       </React.Fragment>
     )
 };

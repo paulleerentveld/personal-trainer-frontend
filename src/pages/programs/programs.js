@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Scheduler, {Editing, Resource, View} from 'devextreme-react/scheduler';
 import { Popup } from 'devextreme-react/popup';
 import ScrollView from 'devextreme-react/scroll-view';
@@ -10,6 +10,8 @@ import { programsstore } from '../../api/programs';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './programs.scss';
 import { Table } from 'reactstrap';
+import { WorkoutPreview } from '../../components/workout-components/workout-preview'
+import { ExercisePreview } from '../../components/exercise-components/exercise-preview'
 
 //const currentDate = new Date(2022, 01, 01);
 const views = ['day', 'workWeek', 'week', 'month', 'agenda'];
@@ -18,11 +20,25 @@ export default function Program() {
   const [workoutData, setWorkoutData] = useState({})
   const [workoutList, setWorkoutList] = useState({})
   const [clientList, setClientList] = useState({})
+  const [editWorkout, setEditWorkout] = useState({})
+  const [editedIndex, setEditedIndex] = useState();
+  const [showPreview, setShowPreview] = useState(false);
+  const [exercisePreview, setExercisePreview] = useState({});
+  const [showExercise, setShowExercise] = useState(false);
   const [isPopupVisible, setPopupVisibility] = useState(false);
+  const scheduler = useRef(null);
   const togglePopup = () => {
     setPopupVisibility(!isPopupVisible);
 };
 const BackendUrl = process.env.REACT_APP_BACKEND_URL;
+const ExercisesBackendUrl = process.env.REACT_APP_BACKEND_URL+"/exercises/";
+
+const handlePreviewClose = () => {setShowPreview(false); setEditWorkout({});}
+const handlePreviewShow = () => setShowPreview(true);
+
+const handleExerciseShow = () => setShowExercise(true);
+const handleExerciseClose = () => {setShowExercise(false);};
+const handleExercisePreview = (exercise) => {setExercisePreview(exercise);handleExerciseShow();}
 
 useEffect(() => {
   fetch(BackendUrl+"/clients/")
@@ -43,9 +59,13 @@ function onAppointmentFormOpening(e) {
   let { enddate } = e.appointmentData.enddate;
 
   function OpenWorkoutPopup() {
-    //let workoutData = e.appointmentData.workout
     setWorkoutData(e.appointmentData.workout);
-    togglePopup();
+    setEditWorkout(e.appointmentData.workout)
+    console.log(workoutData)
+    scheduler.current.instance.hideAppointmentPopup()
+    handlePreviewShow(true)
+    //togglePopup();
+
   }
 
   const { popup } = e;
@@ -207,10 +227,29 @@ const AppointmentTooltip = (data) => {
 
 return (
   <React.Fragment>
+            <WorkoutPreview 
+            handleClose={handlePreviewClose}
+            handleShow={handlePreviewShow}
+            data={editWorkout}
+            BackendUrl={BackendUrl}
+            showPreview={showPreview}
+            editedIndex={editedIndex}
+            setExercisePreview={setExercisePreview}
+            handleExercisePreview={handleExercisePreview}
+          />
+          <ExercisePreview 
+            handleClose={handleExerciseClose}
+            handleShow={handleExerciseShow}
+            data={exercisePreview}
+            BackendUrl={ExercisesBackendUrl}
+            show={showExercise}
+            editedIndex={editedIndex}
+          />
     <h2 className={'content-block'}>Programs</h2>
     <div className={'content-block'}>
       <div className={'dx-card responsive-paddings'}>
         <Scheduler
+          ref={scheduler}
           timeZone="Australia/Brisbane"
           dataSource={programsstore}
           startDateExpr="startdate"         

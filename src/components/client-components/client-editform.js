@@ -72,10 +72,10 @@ function ClientEditForm(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Sex</Form.Label>
-                    <Form.Select required name='sex' value={props.data.sex} defaultValue="" onChange={handleOnChange}>
-                            <option></option>
-                            <option>Male</option>
-                            <option>Female</option>
+                    <Form.Select required name='sex' value={props.data.sex} onChange={handleOnChange}>
+                    <option disabled={true} hidden={true} value="" >Choose Option</option>
+                            <option value="Male" >Male</option>
+                            <option value="Female">Female</option>
                     </Form.Select>
                 </Form.Group>
                 <Form.Group>
@@ -102,9 +102,6 @@ function ClientEditForm(props) {
                 </Button>
             </Form>
         </Modal.Body>
-        <Modal.Footer>
-
-        </Modal.Footer>
       </Modal>
   );
 }

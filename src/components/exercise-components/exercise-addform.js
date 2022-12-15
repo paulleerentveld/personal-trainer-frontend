@@ -43,27 +43,27 @@ function ExerciseAddForm(props) {
           <Modal.Title>Adding New Exercise</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form>
+            <Form onSubmit={props.handleSubmit}>
                 <Form.Group>
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" name='name' onChange={handleOnChange} />
+                    <Form.Control required type="text" name='name' onChange={handleOnChange} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" rows={4} name='description' onChange={handleOnChange} />
+                    <Form.Control required as="textarea" rows={4} name='description' onChange={handleOnChange} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Category</Form.Label>
-                    <Form.Select name='category' onChange={handleOnChange} >
-                    <option key = 'blankChoice' hidden value></option>
+                    <Form.Select required name='category' defaultValue="" onChange={handleOnChange} >
+                    <option disabled={true} hidden={true} value="">Select Category</option>
                             {props.categories.map( (x,y) => 
                                 <option key={y}>{x}</option> )}
                     </Form.Select>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Body Part</Form.Label>
-                    <Form.Select name='bodypart' onChange={handleOnChange} >
-                    <option key = 'blankChoice' hidden value></option>
+                    <Form.Select required name='bodypart' defaultValue="" onChange={handleOnChange} >
+                    <option disabled={true} hidden={true} value="">Select Body Part</option>
                         {props.bodyparts.map( (x,y) => 
                             <option key={y}>{x}</option> )}
                     </Form.Select>
@@ -76,16 +76,17 @@ function ExerciseAddForm(props) {
                     <Form.Label>Exercise Video</Form.Label>
                     <Form.Control type="file"  name="videoupload" onChange={handleVideoChange} />
                 </Form.Group>
+                <br></br>
+                <Form.Group>
+                    <Button className='mx-1' variant="secondary" onClick={props.handleClose}>
+                        Close
+                    </Button>
+                    <Button className='mx-1' variant="primary" type="submit">
+                        Save Changes
+                    </Button>
+                </Form.Group>
             </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={props.handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={props.handleSubmit}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
       </Modal>
   );
 }
