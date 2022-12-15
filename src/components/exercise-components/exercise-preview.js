@@ -59,12 +59,12 @@ function ExercisePreview(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Category</Form.Label>
-                    <Form.Control as="select" name='category' value={props.data.category} disabled={true}  >
+                    <Form.Control type="text" name='category' value={props.data.category} disabled={true}  >
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Body Part</Form.Label>
-                    <Form.Control as="select" name='bodypart' value={props.data.bodypart} disabled={true} >
+                    <Form.Control type="text" name='bodypart' value={props.data.bodypart} disabled={true} >
                     </Form.Control>
                 </Form.Group>
             </Form>
