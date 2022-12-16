@@ -4,12 +4,9 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
+
 function ClientAddForm(props) {
 
-/*     useEffect(() => {
-        console.log(props.data);
-        //console.log(client);
-    }) */
 
     function handleOnChange(e) {
         const value = e.target.value
@@ -20,10 +17,17 @@ function ClientAddForm(props) {
         })
     }
 
+
     function handleImageChange(e) {
         const value = e.target.files[0]
         props.setNewImage(value)
     }
+
+/*     function phoneValidation(number) {
+        const regex = /^04\d{8}$/g;
+        return !(!number || regex.test(number) === false);
+      } */
+ 
 
   return (
       <Modal show={props.show} onHide={props.handleClose}>
@@ -31,7 +35,7 @@ function ClientAddForm(props) {
           <Modal.Title>Adding New Client</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Form onSubmit={props.handleSubmit}>
+            <Form onSubmit={props.handleSubmit} className="">
                 <Form.Group>
                     <Form.Label>Firstname</Form.Label>
                     <Form.Control required type="text" name='firstname' onChange={handleOnChange} />

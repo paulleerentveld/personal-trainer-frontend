@@ -8,11 +8,6 @@ import Col from 'react-bootstrap/Col';
 
 function WorkoutCard(props) {
 
-    useEffect(() => {
-        //console.log(props.data);
-        //console.log(client);
-        //console.log(props.data)
-    })
     
 function handleEditClick() {
     props.handleEditWorkout(props.id)
@@ -28,7 +23,6 @@ function handlePreviewClick() {
 
   return (
     <Card style={{ width: '18rem' }} className="g-2 mx-2">
-      {/* <Card.Img variant="top" src={props.data.imageupload_url} onClick={handlePreviewClick} /> */}
       <Card.Body >
         <Card.Title>{props.data.name}</Card.Title>
         <Card.Text>

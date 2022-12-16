@@ -6,10 +6,6 @@ import Modal from 'react-bootstrap/Modal';
 
 function ClientEditForm(props) {
 
-/*     useEffect(() => {
-        console.log(props.data);
-        //console.log(client);
-    }) */
 
 
     function handleOnChange(e) {
@@ -23,10 +19,6 @@ function ClientEditForm(props) {
 
     function handleImageChange(e) {
         const value = e.target.files[0]
-/*         props.setdata({
-            ...props.data,
-            ["avatar"]: value,
-        }) */
         props.setNewImage(value)
     }
 
@@ -72,8 +64,8 @@ function ClientEditForm(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Sex</Form.Label>
-                    <Form.Select required name='sex' value={props.data.sex} onChange={handleOnChange}>
-                    <option disabled={true} hidden={true} value="" >Choose Option</option>
+                    <Form.Select required name='sex' value={props.data.sex} defaultValue="" onChange={handleOnChange}>
+                    <option disabled={true} hidden={false} value="" >Choose Option</option>
                             <option value="Male" >Male</option>
                             <option value="Female">Female</option>
                     </Form.Select>

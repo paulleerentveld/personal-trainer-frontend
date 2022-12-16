@@ -7,10 +7,6 @@ import Modal from 'react-bootstrap/Modal';
 function WorkoutAddForm(props) {
     const [newExercise, setNewExercise] = useState();
 
-/*     useEffect(() => {
-        console.log(props.data);
-        //console.log(client);
-    }) */
 
     function handleAddExercise() {
         const newWorkoutData = {...props.data}
@@ -42,20 +38,6 @@ function WorkoutAddForm(props) {
         })
     }
 
-    function handleImageChange(e) {
-        const value = e.target.files[0]
-/*         props.setdata({
-            ...props.data,
-            ["avatar"]: value,
-        }) */
-        props.setNewImage(value)
-    }
-
-    function handleVideoChange(e) {
-        const value = e.target.files[0]
-
-        props.setNewVideo(value)
-    }
 
   return (
       <Modal show={props.show} onHide={props.handleClose}>

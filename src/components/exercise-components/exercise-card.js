@@ -8,11 +8,6 @@ import Col from 'react-bootstrap/Col';
 
 function ExerciseCard(props) {
 
-    useEffect(() => {
-        //console.log(props.data);
-        //console.log(client);
-        //console.log(props.data)
-    })
     
 function handleEditClick() {
     props.handleEditExercise(props.id)

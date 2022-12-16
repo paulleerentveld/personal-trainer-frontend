@@ -6,11 +6,6 @@ import Modal from 'react-bootstrap/Modal';
 
 function ExerciseAddForm(props) {
 
-/*     useEffect(() => {
-        console.log(props.data);
-        //console.log(client);
-    }) */
-
 
 
     function handleOnChange(e) {
@@ -24,10 +19,6 @@ function ExerciseAddForm(props) {
 
     function handleImageChange(e) {
         const value = e.target.files[0]
-/*         props.setdata({
-            ...props.data,
-            ["avatar"]: value,
-        }) */
         props.setNewImage(value)
     }
 

@@ -8,16 +8,7 @@ import Select from 'react-select'
 function WorkoutEditForm(props) {
     const [newExercise, setNewExercise] = useState();
 
-/*     useEffect(() => {
-        console.log(props.data);
-        //console.log(client);
-    }) */
 
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' }
-      ]
 
 function handleAddExercise() {
     const newWorkoutData = {...props.data}
@@ -26,8 +17,6 @@ function handleAddExercise() {
     newWorkoutData.exercises.push(exerciseData)
     props.setdata(newWorkoutData)
     setNewExercise()
-    //console.log(newWorkoutData)
-    //console.log(props.data)
 
 }
 
@@ -45,21 +34,6 @@ function handleSelectExercise(e) {
             ...props.data,
             [name]: value,
         })
-    }
-
-    function handleImageChange(e) {
-        const value = e.target.files[0]
-/*         props.setdata({
-            ...props.data,
-            ["avatar"]: value,
-        }) */
-        props.setNewImage(value)
-    }
-
-    function handleVideoChange(e) {
-        const value = e.target.files[0]
-
-        props.setNewVideo(value)
     }
 
 

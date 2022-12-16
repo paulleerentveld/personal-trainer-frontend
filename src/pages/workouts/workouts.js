@@ -239,7 +239,6 @@ export default function Workout() {
   
     return (
       <React.Fragment>  
-                          {/* <Button onClick={() => { handleExercisePreview();}} >Open</Button>       */}
         <Container>
             <Row className='d-flex justify-content-center'>
                 <Stack direction="horizontal" gap={1} className='d-flex justify-content-left '>
@@ -319,7 +318,7 @@ export default function Workout() {
           {search(data).map((workout, index) => {
                   return (
                     <WorkoutCard
-                      key={workout.id}
+                      key={index}
                       arrayindex={index}
                       setEditedIndex={setEditedIndex}
                       handleEditWorkout={handleEditWorkout}

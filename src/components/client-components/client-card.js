@@ -7,11 +7,6 @@ import Card from 'react-bootstrap/Card';
 
 function ClientCard(props) {
 
-/*     useEffect(() => {
-        //console.log(props.data);
-        //console.log(client);
-        //setClient(props.data)
-    }) */
     
 function handleClick() {
     props.handleEditClient(props.id)
@@ -37,7 +32,6 @@ function handleClick() {
         </Card.Text>
         
       </Card.Body>
-      {/* <Button variant="primary" onClick={handleClick} >OpenClient</Button> */}
     </Card>
   );
 }
