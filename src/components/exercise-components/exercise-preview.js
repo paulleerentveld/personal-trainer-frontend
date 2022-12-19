@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import './exercise-preview.scss';
 
 function ExercisePreview(props) {
 
@@ -20,7 +21,7 @@ function ExercisePreview(props) {
     // {cellInfo.data.videoupload_url? <video  ref={videoRef} className="uploadedVideo" width="100%" controls src={cellInfo.data.videoupload_url} ></video> : null}
 
   return (
-      <Modal show={props.show} onHide={props.handleClose}>
+      <Modal show={props.show} onHide={props.handleClose} fullscreen >
         <Modal.Header closeButton>
           <Modal.Title>{props.data.name} - Preview</Modal.Title>
         </Modal.Header>
@@ -33,10 +34,11 @@ function ExercisePreview(props) {
             >
             {props.data.imageupload_url? <Tab eventKey="image" title="Image">
                     <img
-                    className="d-block w-100"
+                    className="d-block mx-auto "
                     src={props.data.imageupload_url}
                     alt="Exercise Image"
-                    height="500"
+                    //height="500"
+                    width="60%"
                     />
             </Tab> : null }
             {props.data.videoupload_url? <Tab eventKey="video" title="Video">

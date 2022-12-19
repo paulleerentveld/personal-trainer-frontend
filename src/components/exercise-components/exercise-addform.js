@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import './exercise-addform.scss';
 
 function ExerciseAddForm(props) {
 
@@ -29,7 +30,7 @@ function ExerciseAddForm(props) {
     }
 
   return (
-      <Modal show={props.show} onHide={props.handleClose}>
+      <Modal show={props.show} onHide={props.handleClose} dialogClassName="modal-100w" fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>Adding New Exercise</Modal.Title>
         </Modal.Header>

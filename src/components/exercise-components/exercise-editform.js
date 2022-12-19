@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import './exercise-editform.scss';
 
 function ExerciseEditForm(props) {
 
@@ -86,7 +87,7 @@ function ExerciseEditForm(props) {
     }
 
   return (
-      <Modal show={props.show} onHide={props.handleClose}>
+      <Modal show={props.show} onHide={props.handleClose} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>Editing {props.data.name}</Modal.Title>
         </Modal.Header>

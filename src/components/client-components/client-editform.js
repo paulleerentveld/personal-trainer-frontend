@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import './client-editform.scss';
 
 function ClientEditForm(props) {
 
@@ -26,7 +27,7 @@ function ClientEditForm(props) {
 
 
   return (
-      <Modal show={props.show} onHide={props.handleClose} >
+      <Modal show={props.show} onHide={props.handleClose} fullscreen >
         <Modal.Header closeButton>
           <Modal.Title>Editing {props.data.firstname} {props.data.lastname}</Modal.Title>
         </Modal.Header>

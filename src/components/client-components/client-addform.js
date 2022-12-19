@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import './client-addform.scss';
 
 
 function ClientAddForm(props) {
@@ -30,7 +31,7 @@ function ClientAddForm(props) {
  
 
   return (
-      <Modal show={props.show} onHide={props.handleClose}>
+      <Modal show={props.show} onHide={props.handleClose} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>Adding New Client</Modal.Title>
         </Modal.Header>

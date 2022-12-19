@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
+import './workout-editform.scss';
 
 function WorkoutEditForm(props) {
     const [newExercise, setNewExercise] = useState();
@@ -39,7 +40,7 @@ function handleSelectExercise(e) {
 
 
   return (
-      <Modal show={props.show} onHide={props.handleClose}>
+      <Modal show={props.show} onHide={props.handleClose} fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>Editing {props.data.name}</Modal.Title>
         </Modal.Header>

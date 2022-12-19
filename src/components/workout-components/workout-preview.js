@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image'
+import './workout-preview.scss';
 
 
 function WorkoutPreview(props) {
@@ -13,7 +14,7 @@ function WorkoutPreview(props) {
 
 
   return (
-      <Modal show={props.showPreview} onHide={props.handleClose} backdrop="static" style={{overlay: {zIndex: 3}}}>
+      <Modal show={props.showPreview} onHide={props.handleClose} backdrop="static" fullscreen>
         <Modal.Header closeButton>
           <Modal.Title>{props.data.name} - Preview</Modal.Title>
         </Modal.Header>
@@ -35,7 +36,7 @@ function WorkoutPreview(props) {
                 <Stack className="justify-content-md-center" gap={2}>
                   <h6 style={{textAlign: "center"}}>{exercise.name}</h6>
                   <p style={{textAlign: "center"}}>{exercise.description}</p>
-                  <img className="rounded mx-auto d-block" src={exercise.imageupload_url} alt="Exercise Image" width="40%" onClick={() => { props.handleExercisePreview(exercise);}} />
+                  <img className="rounded mx-auto d-block" src={exercise.imageupload_url} alt="Exercise Image" width="30%" onClick={() => { props.handleExercisePreview(exercise);}} />
                   {/* <Button onClick={() => { props.handleExercisePreview(exercise);}} >Open</Button>  */}
                   <br></br>
                   <br></br>
