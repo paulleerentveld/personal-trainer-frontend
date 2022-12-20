@@ -5,6 +5,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Stack from 'react-bootstrap/Stack';
 import Image from 'react-bootstrap/Image'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import './workout-preview.scss';
 
 
@@ -19,7 +22,7 @@ function WorkoutPreview(props) {
           <Modal.Title>{props.data.name} - Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            
+            {console.log(props.data)}
             <Form>
                 <Form.Group>
                     <Form.Label>Name</Form.Label>
@@ -30,19 +33,31 @@ function WorkoutPreview(props) {
                     <Form.Control type="text" name='category' value={props.data.workouttype} disabled={true}  >
                     </Form.Control>
                 </Form.Group>
+                <br></br>
+                <br></br>
             </Form>
-
+            <h6 style={{textAlign: "center", textDecoration: "underline"}} >Exercises</h6>
             {props.data.exercises?.map( (exercise,index) => 
-                <Stack className="justify-content-md-center" gap={2}>
-                  <h6 style={{textAlign: "center"}}>{exercise.name}</h6>
-                  <p style={{textAlign: "center"}}>{exercise.description}</p>
-                  <img className="rounded mx-auto d-block" src={exercise.imageupload_url} alt="Exercise Image" width="30%" onClick={() => { props.handleExercisePreview(exercise);}} />
-                  {/* <Button onClick={() => { props.handleExercisePreview(exercise);}} >Open</Button>  */}
-                  <br></br>
-                  <br></br>
-                </Stack>
+                <Container>
+                  <Row onClick={() => { props.handleExercisePreview(exercise);}}>
+                    <Col>
+                      <h6 >{index+1}. - {exercise.name}</h6>
+                      <p >Desc: {exercise.description}</p>
+                    </Col>
+                    <Col>
+                      <img src={exercise.imageupload_url} alt="Exercise Image" height="200"  />
+                    </Col>
+                  </Row>
+                </Container>
+/*                 <Stack className="m-5" gap={2} direction="horizontal">
+                <div>
+                  <h6 style={{textAlign: "left"}}>{index+1}. - {exercise.name}</h6>
+                  <p style={{textAlign: "left"}}>Desc: {exercise.description}</p>
+                </div>
+                <img className="rounded d-block" src={exercise.imageupload_url} alt="Exercise Image" height="200" onClick={() => { props.handleExercisePreview(exercise);}} />
+              </Stack> */
               )}
-
+              
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>

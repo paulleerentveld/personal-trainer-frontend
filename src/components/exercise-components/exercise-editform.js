@@ -119,11 +119,11 @@ function ExerciseEditForm(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Exercise Image</Form.Label>
-                    <Form.Control type="file"  name="imageupload" onChange={handleImageChange} />
+                    <Form.Control type="file" accept='.png,.jpg,.jpeg,.webp'  name="imageupload" onChange={handleImageChange} />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Exercise Video</Form.Label>
-                    <Form.Control type="file"  name="videoupload" onChange={handleVideoChange} />
+                    <Form.Control type="file" accept='.mp4,.mov,.wmv,.avi'  name="videoupload" onChange={handleVideoChange} />
                 </Form.Group>
                 <br></br>
                 <Form.Group>

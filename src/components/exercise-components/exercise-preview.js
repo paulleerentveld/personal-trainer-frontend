@@ -34,11 +34,11 @@ function ExercisePreview(props) {
             >
             {props.data.imageupload_url? <Tab eventKey="image" title="Image">
                     <img
-                    className="d-block mx-auto "
+                    className="d-block mx-auto"
                     src={props.data.imageupload_url}
                     alt="Exercise Image"
-                    //height="500"
-                    width="60%"
+                    height="400"
+                    //width="60%"
                     />
             </Tab> : null }
             {props.data.videoupload_url? <Tab eventKey="video" title="Video">
